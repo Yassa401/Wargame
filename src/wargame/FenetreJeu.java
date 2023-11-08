@@ -44,7 +44,7 @@ public class FenetreJeu extends JFrame{
             	
             	// Titre de la fenetre
                 JFrame.setDefaultLookAndFeelDecorated(true);
-                FenetreJeu f = new FenetreJeu("Wargame");
+                final FenetreJeu f = new FenetreJeu("Wargame");
                 f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 // Position de la fenetre sur l'ecran
                 f.setLocation(IConfig.POSITION_X, IConfig.POSITION_Y);
@@ -89,7 +89,7 @@ public class FenetreJeu extends JFrame{
 						}*/
 						
 						//on ajoute la carte du jeu (probleme: la carte ne s'affiche pas !)	
-						f.add(new Hexagone(IConfig.HAUTEUR_CARTE, IConfig.LARGEUR_CARTE, IConfig.NB_PIX_CASE));
+						f.add(new PanneauJeu(IConfig.HAUTEUR_CARTE, IConfig.LARGEUR_CARTE, IConfig.NB_PIX_CASE));
 						System.out.println("ici");
 					}
                 });

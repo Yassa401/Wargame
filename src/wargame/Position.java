@@ -1,6 +1,14 @@
 package wargame;
 
-public class Position implements IConfig{
+import java.awt.* ;
+
+public class Position extends Point implements IConfig{
+	
+	
+	Position() {
+		super() ;
+	}
+	
 	private int x, y;
 	
 	Position(int x, int y) { this.x = x; this.y = y; }
