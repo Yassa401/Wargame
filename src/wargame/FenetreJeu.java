@@ -14,23 +14,23 @@ import javax.swing.*;
  */
 public class FenetreJeu extends JFrame{
 	
-	/*
-	 * Constructeur qui fait appel a la classe mere JFrame
+	/**
+	 * @brief Constructeur qui fait appel a la classe mere JFrame
 	 * @param nom - le nom de la fenetre qu'on va creer
 	 */
 	FenetreJeu(String nom){
 		super(nom) ;
 	}
 	
-	/* 
-	 * affiche une fenetre vide
+	/** 
+	 * @brief affiche une fenetre vide
 	 * @return  
 	 */
 	@Override
 	public void repaint() {
 		this.setBackground(IConfig.COULEUR_VIDE);
 	}
-	/*
+	/**
 	 * methode principale
 	 * @param args - arguments en ligne de commande
 	 * @return

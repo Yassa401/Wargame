@@ -1,4 +1,5 @@
 package wargame ;
+
 import java.awt.Color ;
 
 public interface IConfig {

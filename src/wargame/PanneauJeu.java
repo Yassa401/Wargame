@@ -15,16 +15,11 @@ public class PanneauJeu extends JPanel{
     private final Point focusedHexagonLocation = new Point();
     private final Dimension dimension;
     final int rows, columns, side;
-    private Position mousePosition;
+    private Position mousePosition = new Position() ;
     
-    
-     
     // number n'est pas private car utilisée dans d'autres classes (classe PanneauJeu ?)
     int number;
-    
-    
-    private final Image image1, image2;
-    
+        
     public PanneauJeu(final int rows, final int columns, final int side) {
         this.rows = rows;
         this.columns = columns;
@@ -39,7 +34,7 @@ public class PanneauJeu extends JPanel{
         MouseInputAdapter mouseHandler = new MouseInputAdapter() {
             @Override
             public void mouseMoved(final MouseEvent e) {
-                mousePosition = (Position) e.getPoint();
+                mousePosition.getPosition(e.getPoint());
                 repaint();
             }
             @Override
@@ -51,10 +46,6 @@ public class PanneauJeu extends JPanel{
         };
         addMouseMotionListener(mouseHandler);
         addMouseListener(mouseHandler);
-        //HEROS
-        image1 = getTestImage(Color.ORANGE);
-        //MONSTRE
-        image2 = getTestImage(Color.LIGHT_GRAY);
     }
     
     @Override
@@ -70,23 +61,20 @@ public class PanneauJeu extends JPanel{
             for (int column = 0; column < columns; column++) {
                 getHexagon(column * dimension.width,
                         (int) (row * side * 1.5));
-                if (mousePosition !=null && hexagon.contains(mousePosition)){
+                if (mousePosition !=null && hexagon.contains(mousePosition.getPoint())){
                     focusedHexagonLocation.x = column * dimension.width;
                     focusedHexagonLocation.y = (int) (row * side * 1.5);
                     number = row * columns + column;
                 }
                 g2d.draw(hexagon);
                 
-                //pour dessiner une image choisie dans une case de  polygone 
-                /*g2d.drawImage(image1,(int)(hexagon.getBounds().x + side*0.5),
-                        (int) (hexagon.getBounds().y + side * 0.5), this);*/
             }
         }
         for (int row = 1; row < rows; row += 2) {
             for (int column = 0; column < columns; column++) {
                 getHexagon(column * dimension.width + dimension.width / 2,
                         (int) (row * side * 1.5 + 0.5));
-                if (mousePosition!= null && hexagon.contains(mousePosition)){
+                if (mousePosition!= null && hexagon.contains(mousePosition.getPoint())){
                     focusedHexagonLocation.x = column * dimension.width
                             + dimension.width / 2;
                     focusedHexagonLocation.y =(int) (row * side * 1.5 + 0.5);
@@ -94,9 +82,6 @@ public class PanneauJeu extends JPanel{
                 }
                 g2d.draw(hexagon);
                 
-                //pour dessiner une image choisie dans une case de  polygone 
-                /*g2d.drawImage(image2,(int)(hexagon.getBounds().x + side*0.5),
-                        (int) (hexagon.getBounds().y + side * 0.5), this);*/
             }
         }
         if (number != -1) {
@@ -120,34 +105,5 @@ public class PanneauJeu extends JPanel{
         hexagon.addPoint(x, y + (int) (1.5 * side));
         return hexagon;
     }
-    
-    private Image getTestImage(final Color color1) {
-        BufferedImage img = new BufferedImage(side, side,
-                BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = (Graphics2D) img.getGraphics();
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setColor(getBackground());
-        g2d.fillRect(0, 0, side, side);
-        g2d.setColor(color1);
-        g2d.fillOval(0, 0, side - 9, side - 3);
-        g2d.drawOval(0, 0, side - 9, side - 3);
-        g2d.setColor(Color.WHITE);
-        g2d.fillOval(4, 9, 5, 7);
-        g2d.setColor(color1);
-        g2d.drawOval(4, 9, 5, 7);
-        g2d.fillOval(6, 12, 3, 3);
-        g2d.setColor(Color.WHITE);
-        g2d.fillOval(14, 9, 5, 7);
-        g2d.setColor(color1);
-        g2d.drawOval(14, 9, 5, 7);
-        g2d.fillOval(16, 12, 3, 3);
-        g2d.setColor(Color.RED);
-        g2d.fillOval(8, 20, 6, 3);
-        g2d.setColor(color1);
-        g2d.drawOval(8, 20, 6, 3);
-        return img;
-    }
-
 
 }

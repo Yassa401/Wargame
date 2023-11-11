@@ -2,20 +2,25 @@ package wargame;
 
 import java.awt.* ;
 
-public class Position extends Point implements IConfig{
-	
-	
-	Position() {
-		super() ;
-	}
+public class Position implements IConfig{
 	
 	private int x, y;
 	
-	Position(int x, int y) { this.x = x; this.y = y; }
+	Position() {
+	}
 	
-	public int getX() { return x; }
+	Point getPoint() {
+		Point p = new Point(this.getX(), this.getY());
+		return p;
+	}
 	
-	public int getY() { return y; }
+	void getPosition(Point p) { this.setX((int)p.getX()); this.setY((int)p.getY());}
+	
+	void getPosition(int x, int y) { this.setX(x); this.setY(y); }
+	
+	public int getX() { return this.x; }
+
+	public int getY() { return this.y; }
 	
 	public void setX(int x) { this.x = x; }
 	
