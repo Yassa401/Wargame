@@ -5,10 +5,19 @@ import java.awt.* ;
 public class Position implements IConfig{
 	
 	private int x, y;
+	private int number; // numero de la case
 	
-	Position() {
+	Position() {}
+	
+	Position(Dimension dimension) {
+		int row = (int) (Math.random()*IConfig.HAUTEUR_CARTE);
+		int column = (int) (Math.random()*IConfig.LARGEUR_CARTE);
+		this.setX(column * dimension.width);
+		this.setY((int)(row * IConfig.NB_PIX_CASE * 1.5));
+		this.number = row * IConfig.LARGEUR_CARTE + column;
+		System.out.println("Case soldat " + this.number);
+		
 	}
-	
 	Point getPoint() {
 		Point p = new Point(this.getX(), this.getY());
 		return p;
@@ -21,6 +30,8 @@ public class Position implements IConfig{
 	public int getX() { return this.x; }
 
 	public int getY() { return this.y; }
+	
+	public int getNumeroCase() { return this.number; }
 	
 	public void setX(int x) { this.x = x; }
 	
