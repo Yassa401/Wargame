@@ -5,10 +5,11 @@ import java.awt.Color ;
 public interface IConfig {
 	
 	// en nombre de cases
-	static final int LARGEUR_CARTE = 23, HAUTEUR_CARTE = 20; 
+	static final int LARGEUR_CARTE = 15; // columns
+	static final int HAUTEUR_CARTE = 12; // rows
 	
 	// Taille d'un côté de l'hexagone
-	static final int NB_PIX_CASE = 20;
+	static final int NB_PIX_CASE = 30;
 	
 	// Position de la fenêtre
 	static final int POSITION_X = 100, POSITION_Y = 20;
@@ -26,4 +27,6 @@ public interface IConfig {
 	
 	Color COULEUR_EAU = Color.blue, COULEUR_FORET = Color.green, COULEUR_ROCHER = Color.gray;
 
+	// taille de l'image d'un caratere
+	static final int SIZE_CHARACTER = 30;
 }
