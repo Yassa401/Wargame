@@ -8,18 +8,65 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
+import java.util.HashMap;
 
 /**
  * Classe exécutable contenant la fenetre de jeu
  */
 public class FenetreJeu extends JFrame{
 	
+	
+	PanneauJeu carteJeu ;
+	HashMap<Integer, Soldat> listeSoldats;
+	int tabCases[];
+	// variable static qui s'incrémente à chaque ajout de soldat dans la hashmap
+	static int indice = 0 ;
+	
 	/**
 	 * @brief Constructeur qui fait appel a la classe mere JFrame
-	 * @param nom - le nom de la fenetre qu'on va creer
+	 * @param nom  le nom de la fenetre qu'on va creer
 	 */
 	FenetreJeu(String nom){
 		super(nom) ;
+		// Initialise un nouveau tableau avec le nombre de cases defini dans l'interface IConfig
+		this.tabCases = new int[IConfig.LARGEUR_CARTE*IConfig.HAUTEUR_CARTE];
+		this.listeSoldats = new HashMap<Integer, Soldat>() ;
+		for(int i=0; i<IConfig.HAUTEUR_CARTE*IConfig.LARGEUR_CARTE; i++) {
+			this.tabCases[i] = -1; // toutes les cases de la carte sont vides au début
+		}
+	}
+	
+	
+	/**
+	 * Renvoie le tableau de cases de la carte
+	 */
+	public int[] getTabCases() {
+		return this.tabCases;
+	}
+	
+	/**
+	 * Renvoie HashMap contenant les informations sur les soldats
+	 */
+	public HashMap<Integer, Soldat> getListeSoldats(){
+		return this.listeSoldats;
+	}
+	
+	/**
+	 * Renvoie le panel contenant la carte de jeu
+	 */
+	public PanneauJeu getPanneau() {
+		return this.carteJeu;
+	}
+	
+	
+	/**
+	 * @brief ajout de soldat dans carte
+	 * @param Soldat : l'objet soldat créé à ajouter
+	 */
+	public void ajoutSoldat(Soldat soldat) {
+		this.listeSoldats.put(FenetreJeu.indice, soldat);
+		this.tabCases[soldat.getPosition().getNumeroCase()] = FenetreJeu.indice; // ===> tabCases[numCase] = indiceHashmap;
+		FenetreJeu.indice += 1;
 	}
 	
 	/** 
@@ -30,6 +77,26 @@ public class FenetreJeu extends JFrame{
 	public void repaint() {
 		this.setBackground(IConfig.COULEUR_VIDE);
 	}
+	
+	/*public void paintSoldat() {
+		
+		for(int i=0; i<IConfig.HAUTEUR_CARTE*IConfig.LARGEUR_CARTE; i++) {
+			if(this.tabCases[i] != -1) {
+			}
+		}
+	}*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*______________________________ PROGRAMME PRINCIPALE ___________________________________ */
+	
 	/**
 	 * methode principale
 	 * @param args - arguments en ligne de commande
@@ -76,21 +143,21 @@ public class FenetreJeu extends JFrame{
                 buttonNewGame.setFocusable(false);
                 //pour effectuer une action si on clique sur le button
                 buttonNewGame.addActionListener(new ActionListener(){
-					@Override
+					// On ajoute le panneau de jeu sur lequel on va jouer
+                	@Override
 					public void actionPerformed(ActionEvent e) {
-						System.out.println("Nouvelle partie !");
-						f.getContentPane().removeAll();
-						f.repaint();
-						/*try {
-						Thread.sleep(2);
-						}
-						catch(InterruptedException exception) {
-							System.out.println("L'execution a ete interrompu") ;
-						}*/
+						f.carteJeu = new PanneauJeu(IConfig.HAUTEUR_CARTE, IConfig.LARGEUR_CARTE, IConfig.NB_PIX_CASE,
+								f.getTabCases(), f.getListeSoldats());
 						
-						//on ajoute la carte du jeu (probleme: la carte ne s'affiche pas !)	
-						f.add(new PanneauJeu(IConfig.HAUTEUR_CARTE, IConfig.LARGEUR_CARTE, IConfig.NB_PIX_CASE));
-						System.out.println("ici");
+						f.getContentPane().removeAll(); // Efface tous les panels du menu principale
+						f.repaint();
+						f.add(f.carteJeu); // Ajoute le panel avec la carte de jeu
+						
+						// Test ajout de soldat ;
+						Soldat s1 = new Monstre();
+		                f.ajoutSoldat(s1);
+						
+						System.out.println("Nouvelle partie !");
 					}
                 });
                 
@@ -108,6 +175,10 @@ public class FenetreJeu extends JFrame{
                 // Ajout des composantes a la fenetre
                 f.add(panelCouverture);
                 f.add(panelMenu);
+                
+             
+                
+     
                 
                 
             }
