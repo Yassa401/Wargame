@@ -78,15 +78,6 @@ public class FenetreJeu extends JFrame{
 		this.setBackground(IConfig.COULEUR_VIDE);
 	}
 	
-	/*public void paintSoldat() {
-		
-		for(int i=0; i<IConfig.HAUTEUR_CARTE*IConfig.LARGEUR_CARTE; i++) {
-			if(this.tabCases[i] != -1) {
-			}
-		}
-	}*/
-	
-	
 	
 	
 	
@@ -152,10 +143,20 @@ public class FenetreJeu extends JFrame{
 						f.getContentPane().removeAll(); // Efface tous les panels du menu principale
 						f.repaint();
 						f.add(f.carteJeu); // Ajoute le panel avec la carte de jeu
-						
+						Soldat h;
 						// Test ajout de soldat ;
-						Soldat s1 = new Monstre();
-		                f.ajoutSoldat(s1);
+						for(int i = 0 ; i < ((int)(Math.random()*20) + 20); i++) {
+							h = new Heros();
+							if(f.tabCases[h.getPosition().getNumeroCase()] == -1) {
+								f.ajoutSoldat(h);
+							}
+						}
+						for(int i = 0 ; i < ((int)(Math.random()*20) + 20); i++) {
+							h = new Monstre();
+							if(f.tabCases[h.getPosition().getNumeroCase()] == -1) {
+								f.ajoutSoldat(h);
+							}
+						}
 						
 						System.out.println("Nouvelle partie !");
 					}

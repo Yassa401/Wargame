@@ -21,8 +21,9 @@ public class PanneauJeu extends JPanel{
     private Position mousePosition = new Position() ;
     HashMap<Integer, Soldat> listeSoldats;
 	int tabCases[];
-    BufferedImage imageHobbit, imageHumain, imageElf, imageNain;
-    BufferedImage imageDragon;
+    BufferedImage imageHobbit, imageHumain, imageElf, imageNain; // images Heros
+    BufferedImage imageTroll, imageGobelin, imageOrc;
+    BufferedImage imageDragon; // image Dragon
     
     // number n'est pas private car utilisée dans d'autres classes (classe PanneauJeu ?)
     static int number;
@@ -48,11 +49,17 @@ public class PanneauJeu extends JPanel{
         //charger une image d'un soldat (en cours de test)
         try { imageHobbit = ImageIO.read(new File("src/wargame/hobbit.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du hobbit !");}
-        try { imageHumain = ImageIO.read(new File("src/wargame/humain.jpg"));}
+        try { imageHumain = ImageIO.read(new File("src/wargame/chevalier.jpg"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du humain !");}
-        try { imageElf = ImageIO.read(new File("src/wargame/elf.jpg"));}
+        try { imageElf = ImageIO.read(new File("src/wargame/elf.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
         try { imageNain = ImageIO.read(new File("src/wargame/nain.jpg"));}
+        catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
+        try { imageOrc = ImageIO.read(new File("src/wargame/orc.png"));}
+        catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
+        try { imageGobelin = ImageIO.read(new File("src/wargame/gobelin.png"));}
+        catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
+        try { imageTroll = ImageIO.read(new File("src/wargame/troll.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
         try {imageDragon = ImageIO.read(new File("src/wargame/dragon.png"));}
         catch(Exception e) {System.out.println("Erreur pour charger l'image du soldat !");}
@@ -160,12 +167,39 @@ public class PanneauJeu extends JPanel{
     public void paintSoldat(final Graphics2D g2d) {
     	for(int i=0; i < IConfig.LARGEUR_CARTE*IConfig.HAUTEUR_CARTE; i++) {
     		if(this.tabCases[i] != -1) {
-    			g2d.drawImage(imageHobbit,
-    					this.getListeSoldats().get(this.tabCases[i]).getPosition().getX() + (int)(side*0.3),
-    					this.getListeSoldats().get(this.tabCases[i]).getPosition().getY() + (int)(side*0.5),
+    			//System.out.println(" soldat is instance of Monstre " + (this.getListeSoldats().get(this.tabCases[i]) instanceof Monstre)) ;
+    			//System.out.println(" soldat est de type specifique " + (this.getListeSoldats().get(this.tabCases[i]).getTypeMonstre())) ;
+    			if(this.getListeSoldats().get(this.tabCases[i]).getPosition().getRow()%2 == 1) {
+    			g2d.drawImage(getImage(this.getListeSoldats().get(this.tabCases[i])),
+    					this.getListeSoldats().get(this.tabCases[i]).getPosition().getX() + (int)(side*1.13),
+    					this.getListeSoldats().get(this.tabCases[i]).getPosition().getY() + (int)(side*0.47),
     					IConfig.SIZE_CHARACTER, IConfig.SIZE_CHARACTER, this);
+    			}else if(this.getListeSoldats().get(this.tabCases[i]).getPosition().getRow()%2 == 0) {
+        			g2d.drawImage(getImage(this.getListeSoldats().get(this.tabCases[i])),
+        					this.getListeSoldats().get(this.tabCases[i]).getPosition().getX() + (int)(side*0.3),
+        					this.getListeSoldats().get(this.tabCases[i]).getPosition().getY() + (int)(side*0.47),
+        					IConfig.SIZE_CHARACTER, IConfig.SIZE_CHARACTER, this);
+        			}
     		}
     	}
     }
+    
+    public BufferedImage getImage(Soldat soldat) {
+    	if( soldat instanceof Monstre) {
+    		switch(soldat.getTypeMonstre()) {
+    		case ORC : return this.imageOrc;
+    		case GOBELIN : return this.imageGobelin;
+    		default : return this.imageTroll;
+    		}
+    	}
+    	else {
+    		switch(soldat.getTypeHeros()) {
+    		case HUMAIN: return this.imageHumain;
+    		case NAIN: return this.imageNain;
+    		case ELF: return this.imageElf;
+    		default: return this.imageHobbit;
+    		}
+    	}
+    } 
 
 }

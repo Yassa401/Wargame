@@ -28,5 +28,5 @@ public interface IConfig {
 	Color COULEUR_EAU = Color.blue, COULEUR_FORET = Color.green, COULEUR_ROCHER = Color.gray;
 
 	// taille de l'image d'un caratere
-	static final int SIZE_CHARACTER = 30;
+	static final int SIZE_CHARACTER = 35;
 }
