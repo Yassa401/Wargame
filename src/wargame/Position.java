@@ -6,12 +6,12 @@ public class Position implements IConfig{
 	
 	private int x, y;
 	private int number; // numero de la case
-	
+	private int column, row;
 	Position() {}
 	
 	Position(Dimension dimension) {
-		int row = (int) (Math.random()*IConfig.HAUTEUR_CARTE);
-		int column = (int) (Math.random()*IConfig.LARGEUR_CARTE);
+		this.row = (int) (Math.random()*IConfig.HAUTEUR_CARTE);
+		this.column = (int) (Math.random()*IConfig.LARGEUR_CARTE);
 		this.setX(column * dimension.width);
 		this.setY((int)(row * IConfig.NB_PIX_CASE * 1.5));
 		this.number = row * IConfig.LARGEUR_CARTE + column;
@@ -26,6 +26,10 @@ public class Position implements IConfig{
 	void getPosition(Point p) { this.setX((int)p.getX()); this.setY((int)p.getY());}
 	
 	void getPosition(int x, int y) { this.setX(x); this.setY(y); }
+	
+	public int getRow() { return this.row; }
+	
+	public int getColumn() { return this.column; }
 	
 	public int getX() { return this.x; }
 
