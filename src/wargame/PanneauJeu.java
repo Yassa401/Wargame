@@ -20,10 +20,11 @@ public class PanneauJeu extends JPanel{
     final int rows, columns, side;
     private Position mousePosition = new Position() ;
     HashMap<Integer, Soldat> listeSoldats;
+    HashMap<Integer, Obstacle> listeObstacle;
 	int tabCases[];
     BufferedImage imageHobbit, imageHumain, imageElf, imageNain; // images Heros
     BufferedImage imageTroll, imageGobelin, imageOrc;
-    BufferedImage imageDragon; // image Dragon
+    BufferedImage imageRocher,imageEau,imageForet;
     
     // number n'est pas private car utilisée dans d'autres classes (classe PanneauJeu ?)
     static int number;
@@ -38,12 +39,13 @@ public class PanneauJeu extends JPanel{
      * @param tabCases[] les indices des cases de la carte, si -1 vide, sinon indice de l'objet à mettre dans la carte
      * @param listeSoldats Liste de soldats à ajouter dans la carte
      */
-    public PanneauJeu(final int rows, final int columns, final int side, int tabCases[], HashMap<Integer, Soldat> listeSoldats) {
+    public PanneauJeu(final int rows, final int columns, final int side, int tabCases[], HashMap<Integer, Soldat> listeSoldats,    HashMap<Integer, Obstacle> listeObstacle) {
         this.rows = rows;
         this.columns = columns;
         this.side = side;
         this.tabCases = tabCases;
         this.listeSoldats = listeSoldats;
+        this.listeObstacle = listeObstacle;
         
         
         //charger une image d'un soldat (en cours de test)
@@ -61,9 +63,12 @@ public class PanneauJeu extends JPanel{
         catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
         try { imageTroll = ImageIO.read(new File("src/wargame/troll.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
-        try {imageDragon = ImageIO.read(new File("src/wargame/dragon.png"));}
-        catch(Exception e) {System.out.println("Erreur pour charger l'image du soldat !");}
-        
+        try { imageEau = ImageIO.read(new File("src/wargame/eau.jpg"));}
+        catch(Exception e) { System.out.println("Erreur pour charger l'image du obstacle !");}
+        try { imageRocher = ImageIO.read(new File("src/wargame/rocher.png"));}
+        catch(Exception e) { System.out.println("Erreur pour charger l'image du obstacle !");}
+        try { imageForet = ImageIO.read(new File("src/wargame/arbre.jpg"));}
+        catch(Exception e) { System.out.println("Erreur pour charger l'image du obstacle !");}
         
         // On veut que ce panel contenant la carte du jeu couvre toute la fenetre (ou pas ?)
         this.setBounds(0, 0, IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/5, IConfig.LONGUEUR_FENETRE - IConfig.LONGUEUR_FENETRE/8);
@@ -99,6 +104,10 @@ public class PanneauJeu extends JPanel{
 	 */
 	public HashMap<Integer, Soldat> getListeSoldats(){
 		return this.listeSoldats;
+	}
+	
+	public HashMap<Integer,Obstacle> getListeObstacle(){
+		return this.listeObstacle;
 	}
     
     @Override
@@ -140,7 +149,7 @@ public class PanneauJeu extends JPanel{
             }
         }
         // Dessine les soldats de la carte
-        paintSoldat(g2d);
+        paintAll(g2d);
         
         if (PanneauJeu.number != -1) {
             g2d.setColor(Color.red);
@@ -164,27 +173,41 @@ public class PanneauJeu extends JPanel{
         return hexagon;
     }
     
-    public void paintSoldat(final Graphics2D g2d) {
+    public void paintAll(final Graphics2D g2d) {
     	for(int i=0; i < IConfig.LARGEUR_CARTE*IConfig.HAUTEUR_CARTE; i++) {
     		if(this.tabCases[i] != -1) {
-    			//System.out.println(" soldat is instance of Monstre " + (this.getListeSoldats().get(this.tabCases[i]) instanceof Monstre)) ;
-    			//System.out.println(" soldat est de type specifique " + (this.getListeSoldats().get(this.tabCases[i]).getTypeMonstre())) ;
-    			if(this.getListeSoldats().get(this.tabCases[i]).getPosition().getRow()%2 == 1) {
-    			g2d.drawImage(getImage(this.getListeSoldats().get(this.tabCases[i])),
+    			if (tabCases[i]<IConfig.NB_HEROS+IConfig.NB_MONSTRES) {
+    				if(this.getListeSoldats().get(this.tabCases[i]).getPosition().getRow()%2 == 1) {
+    			g2d.drawImage(getImageSoldat(this.getListeSoldats().get(this.tabCases[i])),
     					this.getListeSoldats().get(this.tabCases[i]).getPosition().getX() + (int)(side*1.13),
     					this.getListeSoldats().get(this.tabCases[i]).getPosition().getY() + (int)(side*0.47),
     					IConfig.SIZE_CHARACTER, IConfig.SIZE_CHARACTER, this);
     			}else if(this.getListeSoldats().get(this.tabCases[i]).getPosition().getRow()%2 == 0) {
-        			g2d.drawImage(getImage(this.getListeSoldats().get(this.tabCases[i])),
+        			g2d.drawImage(getImageSoldat(this.getListeSoldats().get(this.tabCases[i])),
         					this.getListeSoldats().get(this.tabCases[i]).getPosition().getX() + (int)(side*0.3),
         					this.getListeSoldats().get(this.tabCases[i]).getPosition().getY() + (int)(side*0.47),
         					IConfig.SIZE_CHARACTER, IConfig.SIZE_CHARACTER, this);
         			}
+    			}
+    			else {
+    				if(this.getListeObstacle().get(this.tabCases[i]).getPosition().getRow()%2 == 1) {
+	    			g2d.drawImage(getImageObstacle(this.getListeObstacle().get(this.tabCases[i])),
+	    					this.getListeObstacle().get(this.tabCases[i]).getPosition().getX() + (int)(side*1.13),
+	    					this.getListeObstacle().get(this.tabCases[i]).getPosition().getY() + (int)(side*0.47),
+	    					IConfig.SIZE_CHARACTER, IConfig.SIZE_CHARACTER, this);
+	    			}else if(this.getListeObstacle().get(this.tabCases[i]).getPosition().getRow()%2 == 0) {
+	        			g2d.drawImage(getImageObstacle(this.getListeObstacle().get(this.tabCases[i])),
+	        					this.getListeObstacle().get(this.tabCases[i]).getPosition().getX() + (int)(side*0.3),
+	        					this.getListeObstacle().get(this.tabCases[i]).getPosition().getY() + (int)(side*0.47),
+	        					IConfig.SIZE_CHARACTER, IConfig.SIZE_CHARACTER, this);
+	        			}
+    			}
+    			
     		}
     	}
     }
     
-    public BufferedImage getImage(Soldat soldat) {
+    public BufferedImage getImageSoldat(Soldat soldat) {
     	if( soldat instanceof Monstre) {
     		switch(soldat.getTypeMonstre()) {
     		case ORC : return this.imageOrc;
@@ -200,6 +223,13 @@ public class PanneauJeu extends JPanel{
     		default: return this.imageHobbit;
     		}
     	}
+    } 
+    public BufferedImage getImageObstacle(Obstacle obstacle) {
+    	switch(obstacle.getTypeObstacle()) {
+		case FORET : return this.imageForet;
+		case ROCHER : return this.imageRocher;
+		default : return this.imageEau;
+		}
     } 
 
 }
