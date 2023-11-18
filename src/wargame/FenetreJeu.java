@@ -17,7 +17,8 @@ public class FenetreJeu extends JFrame{
 	
 	
 	PanneauJeu carteJeu ;
-	HashMap<Integer, Soldat> listeSoldats;
+	HashMap<Integer, Soldat> listeSoldats = new HashMap<Integer, Soldat>();
+	HashMap<Integer,Obstacle> listeObstacle = new HashMap<Integer,Obstacle>();
 	int tabCases[];
 	// variable static qui s'incrémente à chaque ajout de soldat dans la hashmap
 	static int indice = 0 ;
@@ -30,7 +31,6 @@ public class FenetreJeu extends JFrame{
 		super(nom) ;
 		// Initialise un nouveau tableau avec le nombre de cases defini dans l'interface IConfig
 		this.tabCases = new int[IConfig.LARGEUR_CARTE*IConfig.HAUTEUR_CARTE];
-		this.listeSoldats = new HashMap<Integer, Soldat>() ;
 		for(int i=0; i<IConfig.HAUTEUR_CARTE*IConfig.LARGEUR_CARTE; i++) {
 			this.tabCases[i] = -1; // toutes les cases de la carte sont vides au début
 		}
@@ -51,6 +51,10 @@ public class FenetreJeu extends JFrame{
 		return this.listeSoldats;
 	}
 	
+	public HashMap<Integer,Obstacle> getListeObstacle(){
+		return this.listeObstacle;
+	}
+	
 	/**
 	 * Renvoie le panel contenant la carte de jeu
 	 */
@@ -68,6 +72,11 @@ public class FenetreJeu extends JFrame{
 		this.tabCases[soldat.getPosition().getNumeroCase()] = FenetreJeu.indice; // ===> tabCases[numCase] = indiceHashmap;
 		FenetreJeu.indice += 1;
 	}
+	public void ajoutObstacle(Obstacle obstacle) {
+		this.listeObstacle.put(FenetreJeu.indice, obstacle);
+		this.tabCases[obstacle.getPosition().getNumeroCase()] = FenetreJeu.indice;
+		FenetreJeu.indice += 1;
+	}
 	
 	/** 
 	 * @brief affiche une fenetre vide
@@ -77,13 +86,6 @@ public class FenetreJeu extends JFrame{
 	public void repaint() {
 		this.setBackground(IConfig.COULEUR_VIDE);
 	}
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	/*______________________________ PROGRAMME PRINCIPALE ___________________________________ */
@@ -138,25 +140,34 @@ public class FenetreJeu extends JFrame{
                 	@Override
 					public void actionPerformed(ActionEvent e) {
 						f.carteJeu = new PanneauJeu(IConfig.HAUTEUR_CARTE, IConfig.LARGEUR_CARTE, IConfig.NB_PIX_CASE,
-								f.getTabCases(), f.getListeSoldats());
+								f.getTabCases(), f.getListeSoldats() , f.getListeObstacle());
 						
 						f.getContentPane().removeAll(); // Efface tous les panels du menu principale
 						f.repaint();
 						f.add(f.carteJeu); // Ajoute le panel avec la carte de jeu
 						Soldat h;
+						Obstacle o;
 						// Test ajout de soldat ;
-						for(int i = 0 ; i < ((int)(Math.random()*20) + 20); i++) {
+						for(int i = 0 ; i < IConfig.NB_HEROS; i++) {
 							h = new Heros();
 							if(f.tabCases[h.getPosition().getNumeroCase()] == -1) {
 								f.ajoutSoldat(h);
 							}
 						}
-						for(int i = 0 ; i < ((int)(Math.random()*20) + 20); i++) {
+						for(int i = 0 ; i < IConfig.NB_MONSTRES; i++) {
 							h = new Monstre();
 							if(f.tabCases[h.getPosition().getNumeroCase()] == -1) {
 								f.ajoutSoldat(h);
 							}
 						}
+						for(int i = 0 ; i < IConfig.NB_OBSTACLES; i++) {
+							o = new Obstacle();
+							if(f.tabCases[o.getPosition().getNumeroCase()] == -1) {
+								f.ajoutObstacle(o);
+							}
+						}
+						
+						// Test ajout d'obstacle ;
 						
 						System.out.println("Nouvelle partie !");
 					}
