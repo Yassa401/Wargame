@@ -100,7 +100,7 @@ public class FenetreJeu extends JFrame{
 		Runnable gui = new Runnable() {
             public void run() {
             	// Logo de la fenetre et debut du jeu
-                ImageIcon imageicon = new ImageIcon("src/wargame/wargame2.jpg") ;
+                ImageIcon imageicon = new ImageIcon("src/wargame/images/wargame2.jpg") ;
             	
             	// Titre de la fenetre
                 JFrame.setDefaultLookAndFeelDecorated(true);
@@ -126,7 +126,7 @@ public class FenetreJeu extends JFrame{
                 labelLogo.setHorizontalAlignment(JLabel.CENTER);
                 labelLogo.setBackground(Color.BLUE);
                 
-                //Bouttons à cliquer dans le menu principale
+                //boutton1s à cliquer dans le menu principale
                 JButton buttonNewGame = new JButton("Nouvelle partie");
                 buttonNewGame.setSize(200, 30);
                 buttonNewGame.setHorizontalAlignment(JButton.CENTER);
@@ -174,13 +174,13 @@ public class FenetreJeu extends JFrame{
                 });
                 
                 JPanel panelCouverture = new JPanel();
-                panelCouverture.setBackground(Color.BLUE);
+                panelCouverture.setBackground(IConfig.COULEUR_VIDE);
                 panelCouverture.setBounds(0, 0, IConfig.LARGEUR_FENETRE, 2*IConfig.LONGUEUR_FENETRE/3);
                 
                 panelCouverture.add(labelLogo);
                 
                 JPanel panelMenu = new JPanel();
-                panelMenu.setBackground(Color.RED);
+                panelMenu.setBackground(IConfig.COULEUR_VIDE);
                 panelMenu.setBounds(0, 2*IConfig.LONGUEUR_FENETRE/3, IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE/3);
 				panelMenu.add(buttonNewGame);
 

@@ -49,25 +49,25 @@ public class PanneauJeu extends JPanel{
         
         
         //charger une image d'un soldat (en cours de test)
-        try { imageHobbit = ImageIO.read(new File("src/wargame/hobbit.png"));}
+        try { imageHobbit = ImageIO.read(new File("src/wargame/images/hobbit.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du hobbit !");}
-        try { imageHumain = ImageIO.read(new File("src/wargame/chevalier.jpg"));}
+        try { imageHumain = ImageIO.read(new File("src/wargame/images/chevalier.jpg"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du humain !");}
-        try { imageElf = ImageIO.read(new File("src/wargame/elf.png"));}
+        try { imageElf = ImageIO.read(new File("src/wargame/images/elf.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
-        try { imageNain = ImageIO.read(new File("src/wargame/nain.jpg"));}
+        try { imageNain = ImageIO.read(new File("src/wargame/images/nain.jpg"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
-        try { imageOrc = ImageIO.read(new File("src/wargame/orc.png"));}
+        try { imageOrc = ImageIO.read(new File("src/wargame/images/orc.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
-        try { imageGobelin = ImageIO.read(new File("src/wargame/gobelin.png"));}
+        try { imageGobelin = ImageIO.read(new File("src/wargame/images/gobelin.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
-        try { imageTroll = ImageIO.read(new File("src/wargame/troll.png"));}
+        try { imageTroll = ImageIO.read(new File("src/wargame/images/troll.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
-        try { imageEau = ImageIO.read(new File("src/wargame/eau.jpg"));}
+        try { imageEau = ImageIO.read(new File("src/wargame/images/eau.jpg"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du obstacle !");}
-        try { imageRocher = ImageIO.read(new File("src/wargame/rocher.png"));}
+        try { imageRocher = ImageIO.read(new File("src/wargame/images/rocher.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du obstacle !");}
-        try { imageForet = ImageIO.read(new File("src/wargame/arbre.jpg"));}
+        try { imageForet = ImageIO.read(new File("src/wargame/images/arbre.jpg"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du obstacle !");}
         
         // On veut que ce panel contenant la carte du jeu couvre toute la fenetre (ou pas ?)
@@ -76,17 +76,49 @@ public class PanneauJeu extends JPanel{
         PanneauJeu.dimension = getHexagon(0, 0).getBounds().getSize();
         //System.out.println("PanneauJeu.dimension est " + PanneauJeu.dimension.getHeight() + " " + PanneauJeu.dimension.getWidth()) ;
         MouseInputAdapter mouseHandler = new MouseInputAdapter() {
+        	Position p = null;
+        	Soldat s = null ;
+        	int cleSoldat;
             @Override
             public void mouseMoved(final MouseEvent e) {
-                mousePosition.getPosition(e.getPoint());
+                mousePosition.setPosition(e.getPoint());
                 repaint();
             }
             @Override
             public void mousePressed(final MouseEvent e) {
                 if (PanneauJeu.number != -1) {
                     System.out.println("Hexagon " + (PanneauJeu.number));
+                    if(tabCases[PanneauJeu.number] != -1 && !listeObstacle.containsKey(tabCases[PanneauJeu.number])) {
+                    	cleSoldat = tabCases[PanneauJeu.number];
+                    	p = new Position();
+                    	p.setPosition(e.getPoint());
+                    	s = listeSoldats.get(cleSoldat);
+                    	tabCases[PanneauJeu.number] = -1 ;
+                    }
                 }
+                
             }
+            @Override
+            public void mouseDragged(final MouseEvent e) {
+            	if (s != null && p != null) {
+            		p.setPosition(e.getPoint());
+            		s.seDeplace(p);
+            		
+            	}
+            }
+            
+            @Override
+            public void mouseReleased(final MouseEvent e) {
+            	if(s != null && tabCases[p.getNumeroCase()] == -1 ) {
+            	s.seDeplace(p);
+            	tabCases[p.getNumeroCase()] = cleSoldat;
+            	System.out.println("nouvelle position soldat " + s.getPosition().getNumeroCase());
+              	s = null ; p = null ;
+              	repaint();
+            	}
+            	
+            }
+            
         };
         addMouseMotionListener(mouseHandler);
         addMouseListener(mouseHandler);
@@ -119,7 +151,7 @@ public class PanneauJeu extends JPanel{
         g2d.setColor(Color.black);
         g2d.setStroke(bs1);
         PanneauJeu.number = -1;
-        
+        setBackground(IConfig.COULEUR_VIDE);
         // Dessine tous les hexagones de la carte
         for (int row = 0; row < rows; row +=2) {
             for (int column = 0; column < columns; column++) {
@@ -176,7 +208,7 @@ public class PanneauJeu extends JPanel{
     public void paintAll(final Graphics2D g2d) {
     	for(int i=0; i < IConfig.LARGEUR_CARTE*IConfig.HAUTEUR_CARTE; i++) {
     		if(this.tabCases[i] != -1) {
-    			if (tabCases[i]<IConfig.NB_HEROS+IConfig.NB_MONSTRES) {
+    			if (tabCases[i]<IConfig.NB_HEROS+IConfig.NB_MONSTRES && this.getListeSoldats().containsKey(tabCases[i])) {
     				if(this.getListeSoldats().get(this.tabCases[i]).getPosition().getRow()%2 == 1) {
     			g2d.drawImage(getImageSoldat(this.getListeSoldats().get(this.tabCases[i])),
     					this.getListeSoldats().get(this.tabCases[i]).getPosition().getX() + (int)(side*1.13),
@@ -189,7 +221,7 @@ public class PanneauJeu extends JPanel{
         					IConfig.SIZE_CHARACTER, IConfig.SIZE_CHARACTER, this);
         			}
     			}
-    			else {
+    			else if(this.getListeObstacle().containsKey(tabCases[i])){
     				if(this.getListeObstacle().get(this.tabCases[i]).getPosition().getRow()%2 == 1) {
 	    			g2d.drawImage(getImageObstacle(this.getListeObstacle().get(this.tabCases[i])),
 	    					this.getListeObstacle().get(this.tabCases[i]).getPosition().getX() + (int)(side*1.13),

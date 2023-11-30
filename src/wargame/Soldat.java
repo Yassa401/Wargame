@@ -54,7 +54,7 @@ abstract class Soldat implements ISoldat {
 	    }
 
 	    public void seDeplace(Position nouvelle_Pos) {
-	        this.position =  nouvelle_Pos;
+	        this.getPosition().setPosition(nouvelle_Pos);
 	    }
 
 	    public void combat(Soldat soldat) {
