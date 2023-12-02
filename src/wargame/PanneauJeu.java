@@ -27,7 +27,7 @@ public class PanneauJeu extends JPanel{
     BufferedImage imageRocher,imageEau,imageForet;
     
     // number n'est pas private car utilisée dans d'autres classes (classe PanneauJeu ?)
-    static int number;
+    static int number, row, column;
     // PanneauJeu.dimension aussi !
     static Dimension dimension;
     
@@ -86,12 +86,14 @@ public class PanneauJeu extends JPanel{
             }
             @Override
             public void mousePressed(final MouseEvent e) {
-                if (PanneauJeu.number != -1) {
+            	mousePosition.setPosition(e.getPoint());
+            	if (PanneauJeu.number != -1) {
                     System.out.println("Hexagon " + (PanneauJeu.number));
                     if(tabCases[PanneauJeu.number] != -1 && !listeObstacle.containsKey(tabCases[PanneauJeu.number])) {
                     	cleSoldat = tabCases[PanneauJeu.number];
                     	p = new Position();
-                    	p.setPosition(e.getPoint());
+                    	p.setPosition(e.getPoint()); 
+                    	//System.out.println("number de p " + p.getNumeroCase() + ", row de p " + p.getRow() + ", column de p " + p.getColumn());
                     	s = listeSoldats.get(cleSoldat);
                     	tabCases[PanneauJeu.number] = -1 ;
                     }
@@ -100,16 +102,18 @@ public class PanneauJeu extends JPanel{
             }
             @Override
             public void mouseDragged(final MouseEvent e) {
+            	mousePosition.setPosition(e.getPoint());
             	if (s != null && p != null) {
             		p.setPosition(e.getPoint());
             		s.seDeplace(p);
-            		
             	}
+            	repaint();
             }
             
             @Override
             public void mouseReleased(final MouseEvent e) {
-            	if(s != null && tabCases[p.getNumeroCase()] == -1 ) {
+            	mousePosition.setPosition(e.getPoint());
+            	if(s != null && tabCases[p.getNumeroCase()] == -1)  {
             	s.seDeplace(p);
             	tabCases[p.getNumeroCase()] = cleSoldat;
             	System.out.println("nouvelle position soldat " + s.getPosition().getNumeroCase());
@@ -160,6 +164,7 @@ public class PanneauJeu extends JPanel{
                 if (mousePosition !=null && hexagon.contains(mousePosition.getPoint())){
                     focusedHexagonLocation.x = column * PanneauJeu.dimension.width;
                     focusedHexagonLocation.y = (int) (row * side * 1.5);
+                    PanneauJeu.row = row ; PanneauJeu.column = column ;
                     PanneauJeu.number = row * columns + column;
                 }
                 g2d.draw(hexagon);
@@ -174,6 +179,7 @@ public class PanneauJeu extends JPanel{
                     focusedHexagonLocation.x = column * PanneauJeu.dimension.width
                             + PanneauJeu.dimension.width / 2;
                     focusedHexagonLocation.y =(int) (row * side * 1.5 + 0.5);
+                    PanneauJeu.row = row ; PanneauJeu.column = column ;
                     PanneauJeu.number = row * columns + column;
                 }
                 g2d.draw(hexagon);

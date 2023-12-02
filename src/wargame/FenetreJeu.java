@@ -101,7 +101,8 @@ public class FenetreJeu extends JFrame{
             public void run() {
             	// Logo de la fenetre et debut du jeu
                 ImageIcon imageicon = new ImageIcon("src/wargame/images/wargame2.jpg") ;
-            	
+                Image image = imageicon.getImage();
+                
             	// Titre de la fenetre
                 JFrame.setDefaultLookAndFeelDecorated(true);
                 final FenetreJeu f = new FenetreJeu("Wargame");
@@ -118,21 +119,13 @@ public class FenetreJeu extends JFrame{
                 
                 f.setIconImage(imageicon.getImage());
                 f.setLayout(null) ;
-                //f.add(new Hexagone(IConfig.HAUTEUR_CARTE, IConfig.LARGEUR_CARTE, IConfig.NB_PIX_CASE));
-                
-                //Ajout d'une couverture en début de jeu
-                JLabel labelLogo = new JLabel();
-                labelLogo.setIcon(imageicon);
-                labelLogo.setHorizontalAlignment(JLabel.CENTER);
-                labelLogo.setBackground(Color.BLUE);
                 
                 //boutton1s à cliquer dans le menu principale
                 JButton buttonNewGame = new JButton("Nouvelle partie");
-                buttonNewGame.setSize(200, 30);
-                buttonNewGame.setHorizontalAlignment(JButton.CENTER);
-                buttonNewGame.setVerticalAlignment(JButton.NORTH);
-                buttonNewGame.setHorizontalTextPosition(JButton.CENTER);
-                buttonNewGame.setVerticalTextPosition(JButton.CENTER);
+                buttonNewGame.setSize(150, 30);
+                buttonNewGame.setLocation(IConfig.LARGEUR_FENETRE/2 - IConfig.LARGEUR_FENETRE/11, IConfig.LONGUEUR_FENETRE/2);
+                //buttonNewGame.setHorizontalAlignment(JButton.CENTER); buttonNewGame.setVerticalAlignment(JButton.EAST);
+                buttonNewGame.setHorizontalTextPosition(JButton.CENTER); buttonNewGame.setVerticalTextPosition(JButton.CENTER);
                 buttonNewGame.setFocusable(false);
                 //pour effectuer une action si on clique sur le button
                 buttonNewGame.addActionListener(new ActionListener(){
@@ -173,22 +166,21 @@ public class FenetreJeu extends JFrame{
 					}
                 });
                 
-                JPanel panelCouverture = new JPanel();
+                JPanel panelCouverture = new JPanel() {
+                	@Override 
+                	public void paintComponent(Graphics g){
+                		super.paintComponent(g);
+                		g.drawImage(image, 0, 0, IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE, null);
+                	}
+                };
                 panelCouverture.setBackground(IConfig.COULEUR_VIDE);
-                panelCouverture.setBounds(0, 0, IConfig.LARGEUR_FENETRE, 2*IConfig.LONGUEUR_FENETRE/3);
+                panelCouverture.setBounds(0, 0, IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE);
+                panelCouverture.setLayout(null);
+                panelCouverture.add(buttonNewGame);
                 
-                panelCouverture.add(labelLogo);
-                
-                JPanel panelMenu = new JPanel();
-                panelMenu.setBackground(IConfig.COULEUR_VIDE);
-                panelMenu.setBounds(0, 2*IConfig.LONGUEUR_FENETRE/3, IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE/3);
-				panelMenu.add(buttonNewGame);
 
                 // Ajout des composantes a la fenetre
                 f.add(panelCouverture);
-                f.add(panelMenu);
-                
-             
                 
      
                 

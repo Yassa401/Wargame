@@ -44,9 +44,8 @@ public class Position implements IConfig{
 	
 	void setPosition(Point p) { 
 		this.setX((int)p.getX()); this.setY((int)p.getY());
-		this.setColumn((int)(p.getX()) / PanneauJeu.dimension.width );
-		this.setRow((int)(p.getY() / ((int)IConfig.NB_PIX_CASE * 1.5)));
-		this.number = row * IConfig.LARGEUR_CARTE + column;
+		this.setRow(PanneauJeu.row) ; this.setColumn(PanneauJeu.column) ;
+		this.number = PanneauJeu.number;
 	}
 	
 	void setPosition(int x, int y) { this.setX(x); this.setY(y); }
@@ -55,26 +54,9 @@ public class Position implements IConfig{
 	
 	public int getColumn() { return this.column; }
 	
-	public int getX() {
-		/*if(this.getRow()%2 == 0 )
-			this.setX(this.getColumn() * PanneauJeu.dimension.width);
-		else
-			this.setX(this.getColumn() * PanneauJeu.dimension.width + PanneauJeu.dimension.width/2);
-		*/
-		//this.setX(this.getColumn() * PanneauJeu.dimension.width);
-		return this.x;
-	}
+	public int getX() {	return this.x; }
 
-	public int getY() { 
-		/*
-		if(this.getRow()%2 == 0)
-			this.setY((int)(this.getRow() * IConfig.NB_PIX_CASE * 1.5)); 
-		else
-			this.setY((int)(this.getRow() * IConfig.NB_PIX_CASE * 1.5 + 0.5 ));
-		*/
-		//this.setY((int)(this.getRow() * IConfig.NB_PIX_CASE * 1.5));
-		return this.y; 
-	}
+	public int getY() { return this.y; }
 	
 	public int getNumeroCase() { return this.number; }
 	
