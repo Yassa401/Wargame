@@ -47,7 +47,7 @@ public class PanneauJeu extends JPanel{
         //charger une image d'un soldat (en cours de test)
         try { imageHobbit = ImageIO.read(new File("src/wargame/images/hobbit.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du hobbit !");}
-        try { imageHumain = ImageIO.read(new File("src/wargame/images/chevalier.jpg"));}
+        try { imageHumain = ImageIO.read(new File("src/wargame/images/chevalier.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du humain !");}
         try { imageElf = ImageIO.read(new File("src/wargame/images/elf.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
@@ -102,6 +102,7 @@ public class PanneauJeu extends JPanel{
             		pos.setPosition(e.getPoint());
             		//carte.deplaceSoldat(pos, posSoldat, soldat); /*on deplace le soldat à la position finale lorsque la souris released donc pas besoin*/
             	}
+            	
             	repaint();
             }
             
@@ -123,6 +124,7 @@ public class PanneauJeu extends JPanel{
             		carte.getTabCases()[posSoldat.getNumeroCase()] = cleSoldat;
             	}
             	soldat = null ; pos = null ; posSoldat = null ;
+            	
             	repaint();	
             }
         };

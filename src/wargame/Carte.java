@@ -40,7 +40,8 @@ public class Carte implements ICarte {
 	}
 	
 	public boolean estPositionVide(Position pos) {
-		return tabCases[pos.getNumeroCase()] == -1 ;
+		if(PanneauJeu.number == -1) {return false;}
+		return tabCases[pos.getNumeroCase()] == -1;
 	}
 	
 	@Override
@@ -114,7 +115,7 @@ public class Carte implements ICarte {
 		if(estPositionVide(pos)) {
 			return deplaceSoldat(pos, posSoldat, soldat);
 		}
-		else if(listeSoldats.get(tabCases[pos.getNumeroCase()]) instanceof Monstre) {
+		else if((PanneauJeu.number != -1) && listeSoldats.get(tabCases[pos.getNumeroCase()]) instanceof Monstre) {
 			Soldat monstre = listeSoldats.get(tabCases[pos.getNumeroCase()]);
 			System.out.println("Monstre " + monstre.getTypeMonstre());
 			System.out.println("Points de vie du monstre avant l'attaque est " + monstre.getPoints());
