@@ -32,7 +32,9 @@ public interface ICarte {
 	 */
 	boolean deplaceSoldat(Position pos, Position posSoldat, Soldat soldat);
 	
-	void mort(Soldat perso);
+	boolean combatSoldat(Position posMonstre, Position posSoldat, Soldat soldat, Soldat monstre);
+	
+	boolean mort(Soldat perso);
 	
 	boolean actionHeros(Position pos, Position posSoldat, Soldat soldat);
 	

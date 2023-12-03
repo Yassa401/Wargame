@@ -86,10 +86,26 @@ public class Carte implements ICarte {
 		else { return false; } // deplacement impossible
 		return true;
 	}
+	
+	@Override
+	public boolean combatSoldat(Position posMonstre, Position posSoldat, Soldat soldat, Soldat monstre) {
+		int numCaseSoldat = posSoldat.getNumeroCase();
+		int numCaseMonstre = posMonstre.getNumeroCase();
+		if(numCaseMonstre == (numCaseSoldat+1)) {soldat.combat(monstre);} // à droite
+		else if(numCaseMonstre == (numCaseSoldat-1)) {soldat.combat(monstre);} // à gauche
+		else if(numCaseMonstre == (numCaseSoldat+IConfig.LARGEUR_CARTE)) {soldat.combat(monstre);} // en haut
+		else if(numCaseMonstre == (numCaseSoldat-1+IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==0) {soldat.combat(monstre);} // en haut
+		else if(numCaseMonstre == (numCaseSoldat+1+IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==1) {soldat.combat(monstre);} // en haut
+		else if(numCaseMonstre == (numCaseSoldat-IConfig.LARGEUR_CARTE)) {soldat.combat(monstre);} // en bas
+		else if(numCaseMonstre == (numCaseSoldat-1-IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==0) {soldat.combat(monstre);} // en bas 
+		else if(numCaseMonstre == (numCaseSoldat+1-IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==1) {soldat.combat(monstre);} // en bas
+		else {return false; } // attaque impossible
+		return true;
+	}
 
 	@Override
-	public void mort(Soldat perso) {
-		// TODO Auto-generated method stub
+	public boolean mort(Soldat perso) {
+		return perso.getPoints() <= 0 ;
 		
 	}
 
@@ -98,7 +114,23 @@ public class Carte implements ICarte {
 		if(estPositionVide(pos)) {
 			return deplaceSoldat(pos, posSoldat, soldat);
 		}
-		return false;
+		else if(listeSoldats.get(tabCases[pos.getNumeroCase()]) instanceof Monstre) {
+			Soldat monstre = listeSoldats.get(tabCases[pos.getNumeroCase()]);
+			System.out.println("Monstre " + monstre.getTypeMonstre());
+			System.out.println("Points de vie du monstre avant l'attaque est " + monstre.getPoints());
+			
+			if(combatSoldat(pos, posSoldat, soldat, monstre)) { // si vrai le tour de heros est joué
+				System.out.println("Points de vie du monstre après l'attaque est " + monstre.getPoints());
+				if(mort(monstre)) { /* points de vie inferieure à 0*/
+					listeSoldats.remove(tabCases[pos.getNumeroCase()]); // supprime le monstre du HashMap 
+					tabCases[pos.getNumeroCase()] = -1 ; // vide la case dans la carte
+					System.out.println("le monstre est mort") ;
+				}
+				pos.setNumeroCase(posSoldat.getNumeroCase()); // revient à la position initiale apres attaque
+				return true; // attaque effectue donc tour joué
+			}
+		}
+		return false; // pas deplacement ni attaque (tour n'est pas encore joué)
 	}
 
 	@Override
