@@ -14,14 +14,23 @@ abstract class Soldat implements ISoldat {
 	        this.position = new Position(PanneauJeu.dimension);
 	    }
 
+	    /**
+	     * Renvoie les points de vie du soldat
+	     * @return pointsDevie : points de vie du soldat
+	     */
 	    public int getPoints() {
 	        return pointsDeVie;
 	    }
 
+	    
 	    public int getTour() {
 	        return tour;
 	    }
 
+	    /**
+	     * Renvoie la portee du soldat
+	     * @return portee : portee du soldat
+	     */
 	    public int getPortee() {
 	        return portee;
 	    }
@@ -37,6 +46,14 @@ abstract class Soldat implements ISoldat {
 	    
 	    
 	    /**
+	     * Change les points de vie du soldat
+	     * @param pointDevie : nouvelle valeur des points de vie
+	     */
+	    public void setPoints(int pointDevie) {
+	    	this.pointsDeVie = pointDevie;
+	    }
+	    
+	    /**
 	     * Methode qui renvoie le type enum du Monste
 	     * @return type enum du Monste : TROLL, ORC, GOBELIN
 	     */
@@ -48,16 +65,26 @@ abstract class Soldat implements ISoldat {
 	     */
 	    protected abstract TypesH getTypeHeros();
 	    
-	    
+	    @Override
 	    public void joueTour(int tour) {
 	        this.tour = tour;
 	    }
 
-	    public void seDeplace(Position nouvelle_Pos) {
-	        this.getPosition().setPosition(nouvelle_Pos);
+	    /**
+	     * Deplace le soldat choisie à la position de la souris en Drag&Drop
+	     * @param nouvellePos : la nouvelle position correspondant à celle de la souris
+	     */
+	    @Override
+	    public void seDeplace(Position nouvellePos) {
+	        this.getPosition().setPosition(nouvellePos);
 	    }
 
+	    /**
+	     * Attaque le soldat adverse s'il se trouve à la position de la souris
+	     * @param soldat : soldat à attaquer (dans ce case Monstre)
+	     */
+	    @Override
 	    public void combat(Soldat soldat) {
-	        // code qui gere le combat
+	    	// On definit cette methode dans Heros et Monstre pour recuperer les puissance
 	    }
 }

@@ -19,12 +19,11 @@ public class PanneauJeu extends JPanel{
     private final Point focusedHexagonLocation = new Point();
     final int rows, columns, side;
     private Position mousePosition = new Position() ;
-    HashMap<Integer, Soldat> listeSoldats;
-    HashMap<Integer, Obstacle> listeObstacle;
-	int tabCases[];
     BufferedImage imageHobbit, imageHumain, imageElf, imageNain; // images Heros
     BufferedImage imageTroll, imageGobelin, imageOrc;
     BufferedImage imageRocher,imageEau,imageForet;
+    
+    Carte carte ;
     
     // number n'est pas private car utilisée dans d'autres classes (classe PanneauJeu ?)
     static int number, row, column;
@@ -43,10 +42,7 @@ public class PanneauJeu extends JPanel{
         this.rows = rows;
         this.columns = columns;
         this.side = side;
-        this.tabCases = tabCases;
-        this.listeSoldats = listeSoldats;
-        this.listeObstacle = listeObstacle;
-        
+        this.carte = new Carte(tabCases, listeSoldats, listeObstacle);
         
         //charger une image d'un soldat (en cours de test)
         try { imageHobbit = ImageIO.read(new File("src/wargame/images/hobbit.png"));}
@@ -76,8 +72,8 @@ public class PanneauJeu extends JPanel{
         PanneauJeu.dimension = getHexagon(0, 0).getBounds().getSize();
         //System.out.println("PanneauJeu.dimension est " + PanneauJeu.dimension.getHeight() + " " + PanneauJeu.dimension.getWidth()) ;
         MouseInputAdapter mouseHandler = new MouseInputAdapter() {
-        	Position p = null;
-        	Soldat s = null ;
+        	Position pos = null, posSoldat = null;
+        	Soldat soldat = null ;
         	int cleSoldat;
             @Override
             public void mouseMoved(final MouseEvent e) {
@@ -89,23 +85,23 @@ public class PanneauJeu extends JPanel{
             	mousePosition.setPosition(e.getPoint());
             	if (PanneauJeu.number != -1) {
                     System.out.println("Hexagon " + (PanneauJeu.number));
-                    if(tabCases[PanneauJeu.number] != -1 && !listeObstacle.containsKey(tabCases[PanneauJeu.number])) {
-                    	cleSoldat = tabCases[PanneauJeu.number];
-                    	p = new Position();
-                    	p.setPosition(e.getPoint()); 
-                    	//System.out.println("number de p " + p.getNumeroCase() + ", row de p " + p.getRow() + ", column de p " + p.getColumn());
-                    	s = listeSoldats.get(cleSoldat);
-                    	tabCases[PanneauJeu.number] = -1 ;
-                    }
+                    	cleSoldat = carte.getTabCases()[PanneauJeu.number];
+                    	pos = new Position(); pos.setPosition(e.getPoint());
+                    	soldat = carte.trouveHeros(pos); 
+                    	if( soldat != null) { // soit c'est un obstacle ou monstre
+                    		posSoldat = soldat.getPosition();
+                    		carte.getTabCases()[posSoldat.getNumeroCase()] = -1 ;
+                    		
+                    	}
                 }
                 
             }
             @Override
             public void mouseDragged(final MouseEvent e) {
             	mousePosition.setPosition(e.getPoint());
-            	if (s != null && p != null) {
-            		p.setPosition(e.getPoint());
-            		s.seDeplace(p);
+            	if (soldat != null && pos != null) {
+            		pos.setPosition(e.getPoint());
+            		//carte.deplaceSoldat(pos, posSoldat, soldat); /*on deplace le soldat à la position finale lorsque la souris released donc pas besoin*/
             	}
             	repaint();
             }
@@ -113,13 +109,22 @@ public class PanneauJeu extends JPanel{
             @Override
             public void mouseReleased(final MouseEvent e) {
             	mousePosition.setPosition(e.getPoint());
-            	if(s != null && tabCases[p.getNumeroCase()] == -1)  {
-            	s.seDeplace(p);
-            	tabCases[p.getNumeroCase()] = cleSoldat;
-            	System.out.println("nouvelle position soldat " + s.getPosition().getNumeroCase());
-              	s = null ; p = null ;
-              	repaint();
+            	if(soldat != null && carte.estPositionVide(pos))  {
+            	// si soldat deplace alors on remplie la nouvelle position dans tableCases avec la cle soldat
+            		if(carte.deplaceSoldat(pos, posSoldat, soldat)) { 
+            			carte.getTabCases()[pos.getNumeroCase()] = cleSoldat;
+            			System.out.println("nouvelle position soldat " + soldat.getPosition().getNumeroCase());
+            		}
+            		else { // si soldat non deplace on reemplit l'ancienne case dans tabCases avec la cle soldat
+            			carte.getTabCases()[posSoldat.getNumeroCase()] = cleSoldat;
+            		}
             	}
+            	else if(posSoldat != null){ //  si case remplie on reemplit l'ancienne case dans tabCases avec la cle soldat
+            		carte.getTabCases()[posSoldat.getNumeroCase()] = cleSoldat;
+            	}
+            	soldat = null ; pos = null ; posSoldat = null ;
+            	
+            	repaint();
             	
             }
             
@@ -127,24 +132,6 @@ public class PanneauJeu extends JPanel{
         addMouseMotionListener(mouseHandler);
         addMouseListener(mouseHandler);
     }
-    
-    /**
-	 * Renvoie le tableau de cases de la carte
-	 */
-	public int[] getTabCases() {
-		return this.tabCases;
-	}
-	
-	/**
-	 * Renvoie HashMap contenant les informations sur les soldats
-	 */
-	public HashMap<Integer, Soldat> getListeSoldats(){
-		return this.listeSoldats;
-	}
-	
-	public HashMap<Integer,Obstacle> getListeObstacle(){
-		return this.listeObstacle;
-	}
     
     @Override
     public void paintComponent(final Graphics g) {
@@ -213,30 +200,30 @@ public class PanneauJeu extends JPanel{
     
     public void paintAll(final Graphics2D g2d) {
     	for(int i=0; i < IConfig.LARGEUR_CARTE*IConfig.HAUTEUR_CARTE; i++) {
-    		if(this.tabCases[i] != -1) {
-    			if (tabCases[i]<IConfig.NB_HEROS+IConfig.NB_MONSTRES && this.getListeSoldats().containsKey(tabCases[i])) {
-    				if(this.getListeSoldats().get(this.tabCases[i]).getPosition().getRow()%2 == 1) {
-    			g2d.drawImage(getImageSoldat(this.getListeSoldats().get(this.tabCases[i])),
-    					this.getListeSoldats().get(this.tabCases[i]).getPosition().getX() + (int)(side*1.13),
-    					this.getListeSoldats().get(this.tabCases[i]).getPosition().getY() + (int)(side*0.47),
+    		if(carte.getTabCases()[i] != -1) {
+    			if (carte.getTabCases()[i]<IConfig.NB_HEROS+IConfig.NB_MONSTRES && carte.getListeSoldats().containsKey(carte.getTabCases()[i])) {
+    				if(carte.getListeSoldats().get(carte.tabCases[i]).getPosition().getRow()%2 == 1) {
+    			g2d.drawImage(getImageSoldat(carte.getListeSoldats().get(carte.tabCases[i])),
+    					carte.getListeSoldats().get(carte.getTabCases()[i]).getPosition().getX() + (int)(side*1.13),
+    					carte.getListeSoldats().get(carte.getTabCases()[i]).getPosition().getY() + (int)(side*0.47),
     					IConfig.SIZE_CHARACTER, IConfig.SIZE_CHARACTER, this);
-    			}else if(this.getListeSoldats().get(this.tabCases[i]).getPosition().getRow()%2 == 0) {
-        			g2d.drawImage(getImageSoldat(this.getListeSoldats().get(this.tabCases[i])),
-        					this.getListeSoldats().get(this.tabCases[i]).getPosition().getX() + (int)(side*0.3),
-        					this.getListeSoldats().get(this.tabCases[i]).getPosition().getY() + (int)(side*0.47),
+    			}else if(carte.getListeSoldats().get(carte.getTabCases()[i]).getPosition().getRow()%2 == 0) {
+        			g2d.drawImage(getImageSoldat(carte.getListeSoldats().get(carte.getTabCases()[i])),
+        					carte.getListeSoldats().get(carte.tabCases[i]).getPosition().getX() + (int)(side*0.3),
+        					carte.getListeSoldats().get(carte.getTabCases()[i]).getPosition().getY() + (int)(side*0.47),
         					IConfig.SIZE_CHARACTER, IConfig.SIZE_CHARACTER, this);
         			}
     			}
-    			else if(this.getListeObstacle().containsKey(tabCases[i])){
-    				if(this.getListeObstacle().get(this.tabCases[i]).getPosition().getRow()%2 == 1) {
-	    			g2d.drawImage(getImageObstacle(this.getListeObstacle().get(this.tabCases[i])),
-	    					this.getListeObstacle().get(this.tabCases[i]).getPosition().getX() + (int)(side*1.13),
-	    					this.getListeObstacle().get(this.tabCases[i]).getPosition().getY() + (int)(side*0.47),
+    			else if(carte.getListeObstacle().containsKey(carte.getTabCases()[i])){
+    				if(carte.getListeObstacle().get(carte.getTabCases()[i]).getPosition().getRow()%2 == 1) {
+	    			g2d.drawImage(getImageObstacle(carte.getListeObstacle().get(carte.getTabCases()[i])),
+	    					carte.getListeObstacle().get(carte.getTabCases()[i]).getPosition().getX() + (int)(side*1.13),
+	    					carte.getListeObstacle().get(carte.getTabCases()[i]).getPosition().getY() + (int)(side*0.47),
 	    					IConfig.SIZE_CHARACTER, IConfig.SIZE_CHARACTER, this);
-	    			}else if(this.getListeObstacle().get(this.tabCases[i]).getPosition().getRow()%2 == 0) {
-	        			g2d.drawImage(getImageObstacle(this.getListeObstacle().get(this.tabCases[i])),
-	        					this.getListeObstacle().get(this.tabCases[i]).getPosition().getX() + (int)(side*0.3),
-	        					this.getListeObstacle().get(this.tabCases[i]).getPosition().getY() + (int)(side*0.47),
+	    			}else if(carte.getListeObstacle().get(carte.getTabCases()[i]).getPosition().getRow()%2 == 0) {
+	        			g2d.drawImage(getImageObstacle(carte.getListeObstacle().get(carte.getTabCases()[i])),
+	        					carte.getListeObstacle().get(carte.getTabCases()[i]).getPosition().getX() + (int)(side*0.3),
+	        					carte.getListeObstacle().get(carte.getTabCases()[i]).getPosition().getY() + (int)(side*0.47),
 	        					IConfig.SIZE_CHARACTER, IConfig.SIZE_CHARACTER, this);
 	        			}
     			}

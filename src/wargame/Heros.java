@@ -22,4 +22,9 @@ public class Heros extends Soldat{
 	@Override
 	protected TypesM getTypeMonstre() {return null;} // on ignore cette methode dans Heros
 	
+
+	@Override
+	public void combat(Soldat soldat) { // le parametre soldat est un monstre dans ce cas
+		soldat.setPoints(soldat.getPoints() - typeHerosAlea.getPuissance());
+	}
 }

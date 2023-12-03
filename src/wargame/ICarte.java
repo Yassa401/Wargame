@@ -4,7 +4,7 @@ import java.awt.Graphics ;
 
 public interface ICarte {
 	
-	Element getElement(Position pos);
+	//Element getElement(Position pos);
 	
 	// Trouve aléatoirement une position vide sur la carte
 	Position trouvePositionVide(); 
@@ -15,14 +15,26 @@ public interface ICarte {
 	// Trouve aléatoirement un héros sur la carte
 	Heros trouveHeros(); 
 	
-	//Trouve un héros choisi aléatoirement parmi les 8 positions adjacentes de pos
-	Heros trouveHeros(Position pos); // 
+	/**
+	 * Verifie si un heros existe à la position en parametre
+	 * @param pos : position où chercher
+	 * @return renvoie le heros à la position s'il existe, sinon null
+	 */
+	Heros trouveHeros(Position pos);
 	
-	boolean deplaceSoldat(Position pos, Soldat soldat);
+	
+	/**
+	 * Deplace le soldat dans la nouvelle position si deplacement possible
+	 * @param pos : nouvelle position à laquelle le soldat va se déplacer
+	 * @param posSoldat : ancienne position du soldat pour comparer si déplacement possible
+	 * @param soldat : soldat à déplacer, on change son attribut position en cas de deplacement
+	 * @return Vrai : si déplacement effectué. Faux : si déplacement impossible
+	 */
+	boolean deplaceSoldat(Position pos, Position posSoldat, Soldat soldat);
 	
 	void mort(Soldat perso);
 	
-	boolean actionHeros(Position pos, Position pos2);
+	boolean actionHeros(Position pos, Position posSoldat, Soldat soldat);
 	
 	void jouerSoldats(PanneauJeu pj);
 	
