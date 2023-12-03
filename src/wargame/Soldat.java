@@ -5,15 +5,33 @@ abstract class Soldat implements ISoldat {
 	    private int tour;
 	    private int portee;
 	    private Position position;
-
+	    protected TypesM monstre;
+	    protected TypesH heros;
 	    
-	    Soldat(int pointsDeVie, int portee) {
-	        this.pointsDeVie = pointsDeVie;
-	        this.tour = 0;
-	        this.portee = portee;
-	        this.position = new Position(PanneauJeu.dimension);
+	    /**
+	     * Recupere tous les donnees du enum Monstre pour les stocker dans les variables associées
+	     * @param typeMonstre : enum Monstre choisi
+	     */
+	    Soldat(TypesM typeMonstre){
+	    	this.monstre= typeMonstre;
+	    	this.pointsDeVie = typeMonstre.getPoints();
+	    	this.tour = 0;
+	    	this.portee = typeMonstre.getPortee();
+	    	this.position = new Position(PanneauJeu.dimension);
 	    }
-
+	    
+	    /**
+	     * Recupere tous les donnees du enum Heros pour les stocker dans les variables associées
+	     * @param typeHeros : enum Heros choisi
+	     */
+	    Soldat(TypesH typeHeros){
+	    	this.heros = typeHeros;
+	    	this.pointsDeVie = typeHeros.getPoints();
+	    	this.tour = 0;
+	    	this.portee = typeHeros.getPortee();
+	    	this.position = new Position(PanneauJeu.dimension);
+	    }
+	    
 	    /**
 	     * Renvoie les points de vie du soldat
 	     * @return pointsDevie : points de vie du soldat

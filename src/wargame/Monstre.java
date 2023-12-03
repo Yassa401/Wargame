@@ -8,8 +8,8 @@ public class Monstre extends Soldat {
 	 * Constructeur qui initialise aléatoirement un objet Monstre avec une des valeurs de enm TypesM
 	 */
 	public Monstre() {
-        super(TypesM.getTypeMAlea().getPoints(), TypesM.getTypeMAlea().getPortee());
-        this.typeMonstreAlea = TypesM.getTypeMAlea();
+        super(TypesM.getTypeMAlea());
+		this.typeMonstreAlea = super.monstre;
 	}
 	
 	/**

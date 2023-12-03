@@ -7,8 +7,8 @@ public class Heros extends Soldat{
 	 * Constructeur qui initialise aléatoirement un objet Heros avec une des valeurs de enm TypesH
 	 */
 	public Heros() {
-        super(TypesH.getTypeHAlea().getPoints(), TypesH.getTypeHAlea().getPortee());
-        this.typeHerosAlea = TypesH.getTypeHAlea();
+        super(TypesH.getTypeHAlea());
+		this.typeHerosAlea = super.heros;
 	}
 	
 	/**
