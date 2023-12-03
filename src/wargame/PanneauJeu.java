@@ -91,7 +91,6 @@ public class PanneauJeu extends JPanel{
                     	if( soldat != null) { // soit c'est un obstacle ou monstre
                     		posSoldat = soldat.getPosition();
                     		carte.getTabCases()[posSoldat.getNumeroCase()] = -1 ;
-                    		
                     	}
                 }
                 
@@ -109,13 +108,14 @@ public class PanneauJeu extends JPanel{
             @Override
             public void mouseReleased(final MouseEvent e) {
             	mousePosition.setPosition(e.getPoint());
-            	if(soldat != null && carte.estPositionVide(pos))  {
-            	// si soldat deplace alors on remplie la nouvelle position dans tableCases avec la cle soldat
-            		if(carte.deplaceSoldat(pos, posSoldat, soldat)) { 
+            	if(soldat != null)  {
+            		// si soldat deplace alors on remplie la nouvelle position dans tableCases avec la cle soldat
+            		if(carte.actionHeros(pos, posSoldat, soldat)) { // si deplacement possible ou attaque effectue
             			carte.getTabCases()[pos.getNumeroCase()] = cleSoldat;
             			System.out.println("nouvelle position soldat " + soldat.getPosition().getNumeroCase());
             		}
             		else { // si soldat non deplace on reemplit l'ancienne case dans tabCases avec la cle soldat
+            			// soit deplacement impossible soit attaque sur monstre impossible
             			carte.getTabCases()[posSoldat.getNumeroCase()] = cleSoldat;
             		}
             	}
@@ -123,11 +123,8 @@ public class PanneauJeu extends JPanel{
             		carte.getTabCases()[posSoldat.getNumeroCase()] = cleSoldat;
             	}
             	soldat = null ; pos = null ; posSoldat = null ;
-            	
-            	repaint();
-            	
+            	repaint();	
             }
-            
         };
         addMouseMotionListener(mouseHandler);
         addMouseListener(mouseHandler);
@@ -155,7 +152,6 @@ public class PanneauJeu extends JPanel{
                     PanneauJeu.number = row * columns + column;
                 }
                 g2d.draw(hexagon);
-                
             }
         }
         for (int row = 1; row < rows; row += 2) {
@@ -185,6 +181,12 @@ public class PanneauJeu extends JPanel{
         }
     }
     
+    /**
+     * Renvoie une case hexagone avec les bonnes dimensions
+     * @param x : coordonnée x de l'hexagone à dessiner
+     * @param y : coordonnée y de l'hexagone à dessiner
+     * @return Polygon : renvoie l'objet polygone avec ces points bien définie, dans ce cas c'est un hexagone
+     */
     public Polygon getHexagon(final int x, final int y) {
         hexagon.reset();
         int h = side / 2;
@@ -198,6 +200,11 @@ public class PanneauJeu extends JPanel{
         return hexagon;
     }
     
+    /**
+     * Redessine tous les soldats et les obstacles en choisissant les bonnes images de chaque objet
+     * Utilise les méthodes getImageSoldat() et getImageObstacle() pour renvoyer les images des objets 
+     * @param g2d : graphics de la carte
+     */
     public void paintAll(final Graphics2D g2d) {
     	for(int i=0; i < IConfig.LARGEUR_CARTE*IConfig.HAUTEUR_CARTE; i++) {
     		if(carte.getTabCases()[i] != -1) {
@@ -232,6 +239,11 @@ public class PanneauJeu extends JPanel{
     	}
     }
     
+    /**
+     * Renvoie l'image correspondante au soldat (soit monstre ou heros) 
+     * @param soldat : soldat qui est un objet heros ou monstre
+     * @return BufferedImage : image chargée du soldat
+     */
     public BufferedImage getImageSoldat(Soldat soldat) {
     	if( soldat instanceof Monstre) {
     		switch(soldat.getTypeMonstre()) {
@@ -248,7 +260,13 @@ public class PanneauJeu extends JPanel{
     		default: return this.imageHobbit;
     		}
     	}
-    } 
+    }
+    
+    /**
+     * Renvoie l'image correspondante à l'obstacle
+     * @param obstacle : obstacle qui est un objet Obstacle
+     * @return BufferedImage : image chargée de l'obstacle
+     */
     public BufferedImage getImageObstacle(Obstacle obstacle) {
     	switch(obstacle.getTypeObstacle()) {
 		case FORET : return this.imageForet;
