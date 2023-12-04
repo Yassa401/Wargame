@@ -17,7 +17,6 @@ public class Position implements IConfig{
 		this.setX(column * dimension.width);
 		this.setY((int)(row * IConfig.NB_PIX_CASE * 1.5));
 		this.number = row * IConfig.LARGEUR_CARTE + column;
-		System.out.println("Case soldat " + this.number);
 	}
 	
 	Position(Dimension dimension,int hauteur_min, int largeur_min, int largeur_max, int hauteur_max){

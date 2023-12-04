@@ -70,7 +70,6 @@ public class PanneauJeu extends JPanel{
         this.setBounds(0, 0, IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/5, IConfig.LONGUEUR_FENETRE - IConfig.LONGUEUR_FENETRE/8);
         
         PanneauJeu.dimension = getHexagon(0, 0).getBounds().getSize();
-        //System.out.println("PanneauJeu.dimension est " + PanneauJeu.dimension.getHeight() + " " + PanneauJeu.dimension.getWidth()) ;
         MouseInputAdapter mouseHandler = new MouseInputAdapter() {
         	Position pos = null, posSoldat = null;
         	Soldat soldat = null ;
@@ -100,7 +99,6 @@ public class PanneauJeu extends JPanel{
             	mousePosition.setPosition(e.getPoint());
             	if (soldat != null && pos != null) {
             		pos.setPosition(e.getPoint());
-            		//carte.deplaceSoldat(pos, posSoldat, soldat); /*on deplace le soldat à la position finale lorsque la souris released donc pas besoin*/
             	}
             	
             	repaint();
@@ -114,6 +112,7 @@ public class PanneauJeu extends JPanel{
             		if(carte.actionHeros(pos, posSoldat, soldat)) { // si deplacement possible ou attaque effectue
             			carte.getTabCases()[pos.getNumeroCase()] = cleSoldat;
             			System.out.println("nouvelle position soldat " + soldat.getPosition().getNumeroCase());
+            				
             		}
             		else { // si soldat non deplace on reemplit l'ancienne case dans tabCases avec la cle soldat
             			// soit deplacement impossible soit attaque sur monstre impossible
@@ -124,8 +123,32 @@ public class PanneauJeu extends JPanel{
             		carte.getTabCases()[posSoldat.getNumeroCase()] = cleSoldat;
             	}
             	soldat = null ; pos = null ; posSoldat = null ;
+            	repaint();
+        		
+            	// ______Tour de Monstre_________
+    			soldat = carte.trouveMonstre();
+    			posSoldat = soldat.getPosition();
+    			System.out.println("numCase " + posSoldat.getNumeroCase() + " row " + posSoldat.getRow() + " column " + posSoldat.getColumn());
+    			pos = carte.trouvePositionVide(posSoldat);
+    			System.out.println("position vide adjacente est " + pos.getNumeroCase()) ;
+    			cleSoldat = carte.getTabCases()[posSoldat.getNumeroCase()];
+    			System.out.println("case " + posSoldat.getNumeroCase() + " egale " + cleSoldat );
+    			carte.getTabCases()[posSoldat.getNumeroCase()] = -1 ;
+    			
+    			if(carte.deplaceSoldat(pos, posSoldat, soldat)){
+    				//System.out.println("nouvelle position monstre " + soldat.getPosition().getNumeroCase());
+    				carte.getTabCases()[posSoldat.getNumeroCase()] = cleSoldat;
+    				//System.out.println("case " + posSoldat.getNumeroCase() + " egale " +  carte.getTabCases()[posSoldat.getNumeroCase()]);
+    			}
             	
-            	repaint();	
+    			// separe le tour du Heros et le tour de monstre pour voir les deux affichages separement (probleme : repaint() n'est execute qu'à la fin
+            	/*try { 
+    			    Thread.sleep(3000); // arret pour 2 secondes
+    			} catch (InterruptedException exp) {
+    			    // Handle the exception
+    				exp.getStackTrace();
+    			}*/
+            	repaint();
             }
         };
         addMouseMotionListener(mouseHandler);
