@@ -84,10 +84,10 @@ public class PanneauJeu extends JPanel{
             	mousePosition.setPosition(e.getPoint());
             	if (PanneauJeu.number != -1) {
                     System.out.println("Hexagon " + (PanneauJeu.number));
-                    	cleSoldat = carte.getTabCases()[PanneauJeu.number];
                     	pos = new Position(); pos.setPosition(e.getPoint());
                     	soldat = carte.trouveHeros(pos); 
                     	if( soldat != null) { // soit c'est un obstacle ou monstre
+                    		cleSoldat = carte.getTabCases()[PanneauJeu.number];
                     		posSoldat = soldat.getPosition();
                     		carte.getTabCases()[posSoldat.getNumeroCase()] = -1 ;
                     	}
@@ -126,20 +126,20 @@ public class PanneauJeu extends JPanel{
             	repaint();
         		
             	// ______Tour de Monstre_________
-    			soldat = carte.trouveMonstre();
+    			/*soldat = carte.trouveMonstre();
     			posSoldat = soldat.getPosition();
     			System.out.println("numCase " + posSoldat.getNumeroCase() + " row " + posSoldat.getRow() + " column " + posSoldat.getColumn());
     			pos = carte.trouvePositionVide(posSoldat);
     			System.out.println("position vide adjacente est " + pos.getNumeroCase()) ;
     			cleSoldat = carte.getTabCases()[posSoldat.getNumeroCase()];
-    			System.out.println("case " + posSoldat.getNumeroCase() + " egale " + cleSoldat );
+    			System.out.println("case " + posSoldat.getNumeroCase() + " egale " + cleSoldat  );
     			carte.getTabCases()[posSoldat.getNumeroCase()] = -1 ;
     			
     			if(carte.deplaceSoldat(pos, posSoldat, soldat)){
-    				//System.out.println("nouvelle position monstre " + soldat.getPosition().getNumeroCase());
     				carte.getTabCases()[posSoldat.getNumeroCase()] = cleSoldat;
-    				//System.out.println("case " + posSoldat.getNumeroCase() + " egale " +  carte.getTabCases()[posSoldat.getNumeroCase()]);
-    			}
+    			}*/
+            	
+            	carte.actionMonstre();
             	
     			// separe le tour du Heros et le tour de monstre pour voir les deux affichages separement (probleme : repaint() n'est execute qu'à la fin
             	/*try { 
