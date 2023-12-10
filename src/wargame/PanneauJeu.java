@@ -30,6 +30,9 @@ public class PanneauJeu extends JPanel{
     // PanneauJeu.dimension aussi !
     static Dimension dimension;
     
+    static Position posSoldat = null;
+	static Soldat soldat = null ;
+    
     /**
      * Construit un Panel avec les PanneauJeu.dimensions spécifiées et remplie la carte avec les soldats donnés en paramètre
      * @param rows Hauteur de la carte en cases
@@ -69,11 +72,13 @@ public class PanneauJeu extends JPanel{
         // On veut que ce panel contenant la carte du jeu couvre toute la fenetre (ou pas ?)
         this.setBounds(0, 0, IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/5, IConfig.LONGUEUR_FENETRE - IConfig.LONGUEUR_FENETRE/8);
         
-        PanneauJeu.dimension = getHexagon(0, 0).getBounds().getSize();
-        MouseInputAdapter mouseHandler = new MouseInputAdapter() {
-        	Position pos = null, posSoldat = null;
+        PanneauJeu.dimension = getHexagon(0, 0).getBounds().getSize();  
+      
+    	MouseInputAdapter mouseHandler = new MouseInputAdapter() {
+    		Position pos = null, posSoldat = null;
         	Soldat soldat = null ;
         	int cleSoldat;
+        	
             @Override
             public void mouseMoved(final MouseEvent e) {
                 mousePosition.setPosition(e.getPoint());
@@ -86,21 +91,21 @@ public class PanneauJeu extends JPanel{
                     System.out.println("Hexagon " + (PanneauJeu.number));
                     	pos = new Position(); pos.setPosition(e.getPoint());
                     	soldat = carte.trouveHeros(pos); 
-                    	if( soldat != null) { // soit c'est un obstacle ou monstre
-                    		cleSoldat = carte.getTabCases()[PanneauJeu.number];
+                    	if( soldat != null) { // heros trouvé à la position du clique de la souris                 		
                     		posSoldat = soldat.getPosition();
-                    		carte.getTabCases()[posSoldat.getNumeroCase()] = -1 ;
+                    		PanneauJeu.soldat = soldat;
+                    		PanneauJeu.posSoldat = posSoldat;
                     	}
                 }
-                
+            	
             }
+            
             @Override
             public void mouseDragged(final MouseEvent e) {
             	mousePosition.setPosition(e.getPoint());
             	if (soldat != null && pos != null) {
             		pos.setPosition(e.getPoint());
             	}
-            	
             	repaint();
             }
             
@@ -110,35 +115,13 @@ public class PanneauJeu extends JPanel{
             	if(soldat != null)  {
             		// si soldat deplace alors on remplie la nouvelle position dans tableCases avec la cle soldat
             		if(carte.actionHeros(pos, posSoldat, soldat)) { // si deplacement possible ou attaque effectue
-            			carte.getTabCases()[pos.getNumeroCase()] = cleSoldat;
-            			System.out.println("nouvelle position soldat " + soldat.getPosition().getNumeroCase());
-            				
-            		}
-            		else { // si soldat non deplace on reemplit l'ancienne case dans tabCases avec la cle soldat
-            			// soit deplacement impossible soit attaque sur monstre impossible
-            			carte.getTabCases()[posSoldat.getNumeroCase()] = cleSoldat;
-            		}
-            	}
-            	else if(posSoldat != null){ //  si case remplie on reemplit l'ancienne case dans tabCases avec la cle soldat
-            		carte.getTabCases()[posSoldat.getNumeroCase()] = cleSoldat;
+            			System.out.println("nouvelle position soldat " + soldat.getPosition().getNumeroCase());		
+            		}	
             	}
             	soldat = null ; pos = null ; posSoldat = null ;
+            	PanneauJeu.soldat = null ; PanneauJeu.posSoldat = null ;
             	repaint();
         		
-            	// ______Tour de Monstre_________
-    			/*soldat = carte.trouveMonstre();
-    			posSoldat = soldat.getPosition();
-    			System.out.println("numCase " + posSoldat.getNumeroCase() + " row " + posSoldat.getRow() + " column " + posSoldat.getColumn());
-    			pos = carte.trouvePositionVide(posSoldat);
-    			System.out.println("position vide adjacente est " + pos.getNumeroCase()) ;
-    			cleSoldat = carte.getTabCases()[posSoldat.getNumeroCase()];
-    			System.out.println("case " + posSoldat.getNumeroCase() + " egale " + cleSoldat  );
-    			carte.getTabCases()[posSoldat.getNumeroCase()] = -1 ;
-    			
-    			if(carte.deplaceSoldat(pos, posSoldat, soldat)){
-    				carte.getTabCases()[posSoldat.getNumeroCase()] = cleSoldat;
-    			}*/
-            	
             	carte.actionMonstre();
             	
     			// separe le tour du Heros et le tour de monstre pour voir les deux affichages separement (probleme : repaint() n'est execute qu'à la fin
@@ -196,6 +179,12 @@ public class PanneauJeu extends JPanel{
         }
         // Dessine les soldats de la carte
         paintAll(g2d);
+        
+        //si Soldat selectionné, dessine les cases à sa portée
+        if(PanneauJeu.soldat != null) {
+        	paintPortee(g2d, PanneauJeu.posSoldat, PanneauJeu.soldat);
+        }
+        
         
         if (PanneauJeu.number != -1) {
             g2d.setColor(Color.red);
@@ -298,6 +287,156 @@ public class PanneauJeu extends JPanel{
 		case ROCHER : return this.imageRocher;
 		default : return this.imageEau;
 		}
-    } 
+    }
+    
+    /**
+     * Dessine Les cases à la portée du soldat pour effectuer une attaque à distance
+     * @param soldat
+     */
+    public void paintPortee(final Graphics2D g2d, Position pos, Soldat soldat) {
+    	int row = pos.getRow(), column = pos.getColumn();
+    	int portee = soldat.getPortee();
+    	int x = 0, y = 0;
+    	Polygon focusedHexagon;
+    	
+    	g2d.setColor(Color.cyan);
+        g2d.setStroke(bs3);
+        
+    	if(row%2 == 1) {
+    		x = column * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
+        	y = (int) (row * side * 1.5 + 0.5);
+        	
+        	
+    		for(int i = 1 ; i <= soldat.getPortee(); i++) { // à droite
+    			if ((column+i) >= IConfig.LARGEUR_CARTE){
+    				continue;
+    			}
+    			x = (column+i) * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
+    			focusedHexagon = getHexagon(x,y);
+    	        g2d.draw(focusedHexagon);
+    		}
+    		for(int i = 1 ; i <= soldat.getPortee(); i++) { // à gauche
+    			if ((column-i) < 0) {
+            		continue;
+    			}
+    			
+    			x = (column-i) * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
+    			focusedHexagon = getHexagon(x,y);
+    	        g2d.draw(focusedHexagon);
+    		}
+    		
+    		if((row+1) < IConfig.HAUTEUR_CARTE) {
+    			y = (int) ((row+1) * side * 1.5); // en bas
+    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en bas à droite
+    				if ((column+i) >= IConfig.LARGEUR_CARTE) {
+            			continue;
+    				}
+    			
+    				x = (column+i) * PanneauJeu.dimension.width;
+    				focusedHexagon = getHexagon(x,y);
+    	        	g2d.draw(focusedHexagon);
+    			}
+    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en bas à gauche
+    				if ((column-i) < 0) {
+            			continue;
+    				}
+    			
+    				x = (column-i) * PanneauJeu.dimension.width;
+    				focusedHexagon = getHexagon(x,y);
+    	        	g2d.draw(focusedHexagon);
+    			}
+    		}
+    		
+    		if((row-1) >= 0) { 
+    			y = (int) ((row-1) * side * 1.5); // en haut
+    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en haut à droite
+    				if ((column+i) >= IConfig.LARGEUR_CARTE) {
+            			continue;
+    				}
+    			
+    				x = (column+i) * PanneauJeu.dimension.width;
+    				focusedHexagon = getHexagon(x,y);
+    	        	g2d.draw(focusedHexagon);
+    			}
+    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en haut à gauche
+    				if ((column-i) < 0)
+            			continue;
+    			
+    				x = (column-i) * PanneauJeu.dimension.width;
+    				focusedHexagon = getHexagon(x,y);
+    	        	g2d.draw(focusedHexagon);
+    			}
+    		}
+    		
+    	}
+    	else if(row%2 == 0) {
+    		x = column * PanneauJeu.dimension.width;
+            y = (int) (row * side * 1.5);
+            for(int i = 1 ; i <= soldat.getPortee(); i++) { // à droite
+            	if ((column+i) >= IConfig.LARGEUR_CARTE) {
+            		continue;
+            	}
+            	
+    			x = (column+i) * PanneauJeu.dimension.width;
+    			focusedHexagon = getHexagon(x,y);
+    	        g2d.draw(focusedHexagon);
+    		}
+    		for(int i = 1 ; i <= soldat.getPortee(); i++) { // à gauche
+    			if ((column-i) < 0) {
+            		continue;
+    			}
+    			
+    			x = (column-i) * PanneauJeu.dimension.width;
+    			focusedHexagon = getHexagon(x,y);
+    	        g2d.draw(focusedHexagon);
+    		}
+    		
+    		if((row+1) < IConfig.HAUTEUR_CARTE) {
+    			y = (int) ((row+1) * side * 1.5); // en bas
+    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en bas à droite
+    				if ((column+i) >= IConfig.LARGEUR_CARTE) {
+            			continue;
+    				}
+    			
+    				x = (column+i) * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
+    				focusedHexagon = getHexagon(x,y);
+    	        	g2d.draw(focusedHexagon);
+    			}
+    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en bas à gauche
+    				if ((column-i) < 0) {
+            			continue;
+    				}
+    			
+    				x = (column-i) * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
+    				focusedHexagon = getHexagon(x,y);
+    	        	g2d.draw(focusedHexagon);
+    			}
+    		}
+    		
+    		if((row-1) >= 0) {
+    			y = (int) ((row-1) * side * 1.5); // en haut
+    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en haut à droite
+    				if ((column+i) >= IConfig.LARGEUR_CARTE) {
+    					continue;
+    				}
+    			
+    				x = (column+i) * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
+    				focusedHexagon = getHexagon(x,y);
+    				g2d.draw(focusedHexagon);
+    			}
+    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en haut à gauche
+    				if ((column-i) < 0) {
+    					continue;
+    				}
+    			
+    				x = (column-i) * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
+    				focusedHexagon = getHexagon(x,y);
+    				g2d.draw(focusedHexagon);
+    			}
+    		}
+    	}
+    
+    	
+    }
 
 }

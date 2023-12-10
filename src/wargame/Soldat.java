@@ -105,4 +105,8 @@ abstract class Soldat implements ISoldat {
 	    public void combat(Soldat soldat) {
 	    	// On definit cette methode dans Heros et Monstre pour recuperer les puissance
 	    }
+	    
+	    public void combatDistance(Soldat soldat) {
+	    	// On definit cette methode dans Heros et Monstre pour recuperer les puissance
+	    }
 }

@@ -175,12 +175,12 @@ public class Carte implements ICarte {
 		if(numCasePos == numCaseSoldat) { return false;/* on fait rien le soldat est resté dans sa position */}
 		else if(numCasePos == (numCaseSoldat+1)) {soldat.seDeplace(pos);} // à droite
 		else if(numCasePos == (numCaseSoldat-1)) {soldat.seDeplace(pos);} // à gauche
-		else if(numCasePos == (numCaseSoldat+IConfig.LARGEUR_CARTE)) {soldat.seDeplace(pos);} // en haut
-		else if(numCasePos == (numCaseSoldat-1+IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==0) {soldat.seDeplace(pos);} // en haut
-		else if(numCasePos == (numCaseSoldat+1+IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==1) {soldat.seDeplace(pos);} // en haut
-		else if(numCasePos == (numCaseSoldat-IConfig.LARGEUR_CARTE)) {soldat.seDeplace(pos);} // en bas
-		else if(numCasePos == (numCaseSoldat-1-IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==0) {soldat.seDeplace(pos);} // en bas 
-		else if(numCasePos == (numCaseSoldat+1-IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==1) {soldat.seDeplace(pos);} // en bas
+		else if(numCasePos == (numCaseSoldat+IConfig.LARGEUR_CARTE)) {soldat.seDeplace(pos);} // en bas
+		else if(numCasePos == (numCaseSoldat-1+IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==0) {soldat.seDeplace(pos);} // en bas
+		else if(numCasePos == (numCaseSoldat+1+IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==1) {soldat.seDeplace(pos);} // en bas
+		else if(numCasePos == (numCaseSoldat-IConfig.LARGEUR_CARTE)) {soldat.seDeplace(pos);} // en haut
+		else if(numCasePos == (numCaseSoldat-1-IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==0) {soldat.seDeplace(pos);} // en haut 
+		else if(numCasePos == (numCaseSoldat+1-IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==1) {soldat.seDeplace(pos);} // en haut
 		else { return false; } // deplacement impossible
 		return true;
 	}
@@ -192,6 +192,8 @@ public class Carte implements ICarte {
 	public boolean combatSoldat(Position posSoldatAdverse, Position posSoldat, Soldat soldat, Soldat soldatAdverse) {
 		int numCaseSoldat = posSoldat.getNumeroCase();
 		int numCaseSoldatAdverse = posSoldatAdverse.getNumeroCase();
+		
+		// Attaque proche
 		if(numCaseSoldatAdverse == (numCaseSoldat+1)) {soldat.combat(soldatAdverse);} // à droite
 		else if(numCaseSoldatAdverse == (numCaseSoldat-1)) {soldat.combat(soldatAdverse);} // à gauche
 		else if(numCaseSoldatAdverse == (numCaseSoldat+IConfig.LARGEUR_CARTE)) {soldat.combat(soldatAdverse);} // en haut
@@ -200,7 +202,22 @@ public class Carte implements ICarte {
 		else if(numCaseSoldatAdverse == (numCaseSoldat-IConfig.LARGEUR_CARTE)) {soldat.combat(soldatAdverse);} // en bas
 		else if(numCaseSoldatAdverse == (numCaseSoldat-1-IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==0) {soldat.combat(soldatAdverse);} // en bas 
 		else if(numCaseSoldatAdverse == (numCaseSoldat+1-IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==1) {soldat.combat(soldatAdverse);} // en bas
-		else {return false; } // attaque impossible
+		else { // attaque à distance
+			if(numCaseSoldatAdverse <= (numCaseSoldat+soldat.getPortee()) && numCaseSoldatAdverse >= numCaseSoldat-soldat.getPortee()) {
+				soldat.combatDistance(soldatAdverse);
+			}
+			else if(numCaseSoldatAdverse <= (numCaseSoldat+IConfig.LARGEUR_CARTE + soldat.getPortee()) && 
+					numCaseSoldatAdverse >= numCaseSoldat+IConfig.LARGEUR_CARTE -soldat.getPortee()) {
+				soldat.combatDistance(soldatAdverse);
+			}
+			else if(numCaseSoldatAdverse <= (numCaseSoldat-IConfig.LARGEUR_CARTE + soldat.getPortee()) && 
+					numCaseSoldatAdverse >= numCaseSoldat-IConfig.LARGEUR_CARTE - soldat.getPortee()) {
+				soldat.combatDistance(soldatAdverse);
+			}
+			else { // attaque impossible
+				return false ;
+			}
+		}
 		return true;
 	}
 
@@ -221,28 +238,52 @@ public class Carte implements ICarte {
 	 */
 	@Override
 	public boolean actionHeros(Position pos, Position posSoldat, Soldat soldat) {
+		int cleHeros;
+		
+		
 		if(estPositionVide(pos)) {
-			return deplaceSoldat(pos, posSoldat, soldat);
+			// Recupere dans HashMap pour la déplacer
+			cleHeros = getTabCases()[posSoldat.getNumeroCase()];
+			// Vide la case où se trouver
+			getTabCases()[posSoldat.getNumeroCase()] = -1 ;
+	
+			if(deplaceSoldat(pos, posSoldat, soldat)) { 
+				// posSoldat a changé
+				getTabCases()[posSoldat.getNumeroCase()] = cleHeros;
+				return true; // action effectuée donc tour joué
+			}
+			else { 
+				// posSoldat n'a pas changé
+				getTabCases()[posSoldat.getNumeroCase()] = cleHeros;
+				return false; // pas d'action effectuée donc tour non joué
+			}
 		}
 		else if((PanneauJeu.number != -1) && listeSoldats.get(tabCases[pos.getNumeroCase()]) instanceof Monstre) {
-			Soldat monstre = listeSoldats.get(tabCases[pos.getNumeroCase()]);
+			Soldat monstre = getListeSoldats().get( getTabCases()[pos.getNumeroCase()] );
 			System.out.println("Monstre " + monstre.getTypeMonstre());
 			//System.out.println("Points de vie du monstre avant l'attaque est " + monstre.getPoints());
 			
 			if(combatSoldat(pos, posSoldat, soldat, monstre)) { // si vrai le tour de heros est joué
+				
 				System.out.println("Points de vie du monstre après l'attaque est " + monstre.getPoints());
 				if(mort(monstre)) { /* points de vie inferieure à 0*/
-					listeSoldats.remove(tabCases[pos.getNumeroCase()]); // supprime le monstre du HashMap 
-					tabCases[pos.getNumeroCase()] = -1 ; // vide la case dans la carte
+					getListeSoldats().remove(tabCases[pos.getNumeroCase()]); // supprime le monstre du HashMap 
+					getTabCases()[pos.getNumeroCase()] = -1 ; // vide la case dans la carte
 					System.out.println("le monstre est mort") ;
 				}
 				pos.setNumeroCase(posSoldat.getNumeroCase()); // revient à la position initiale apres attaque
-				return true; // attaque effectue donc tour joué
+				return true; // attaque effectuee donc tour joué
 			}
 		}
 		return false; // pas deplacement ni attaque (tour n'est pas encore joué)
+		
 	}
 	
+	/**
+	 * Général ordinateur qui joue le role Monstre
+	 * Deplace un Monstre ou attaque un Heros
+	 * @return
+	 */
 	public boolean actionMonstre() {
 		Soldat monstre, heros;
 		Position posMonstre, pos;
@@ -260,8 +301,8 @@ public class Carte implements ICarte {
 			monstre.combat(heros);
 			System.out.println("Points de vie du heros après l'attaque est " + heros.getPoints());
 			if(mort(heros)) { /* points de vie inferieure à 0*/
-				listeSoldats.remove(tabCases[heros.getPosition().getNumeroCase()]); // supprime le heros du HashMap
-				tabCases[heros.getPosition().getNumeroCase()] = -1 ; //vide la case dans la carte
+				getListeSoldats().remove(tabCases[heros.getPosition().getNumeroCase()]); // supprime le heros du HashMap
+				getTabCases()[heros.getPosition().getNumeroCase()] = -1 ; //vide la case dans la carte
 				System.out.println("le heros est mort");
 			}
 		}

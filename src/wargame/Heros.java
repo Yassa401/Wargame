@@ -27,4 +27,9 @@ public class Heros extends Soldat{
 	public void combat(Soldat soldat) { // le parametre soldat est un monstre dans ce cas
 		soldat.setPoints(soldat.getPoints() - typeHerosAlea.getPuissance());
 	}
+	
+	@Override
+	public void combatDistance(Soldat soldat) {
+		soldat.setPoints(soldat.getPoints() - typeHerosAlea.getTir());
+	}
 }
