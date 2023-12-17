@@ -14,9 +14,8 @@ import java.util.HashMap;
  * Classe exécutable contenant la fenetre de jeu
  */
 public class FenetreJeu extends JFrame{
-	
-	
-	PanneauJeu carteJeu ;
+	static PanneauJeu carteJeu;
+
 	HashMap<Integer, Soldat> listeSoldats = new HashMap<Integer, Soldat>();
 	HashMap<Integer,Obstacle> listeObstacle = new HashMap<Integer,Obstacle>();
 	int tabCases[];
@@ -34,6 +33,7 @@ public class FenetreJeu extends JFrame{
 		for(int i=0; i<IConfig.HAUTEUR_CARTE*IConfig.LARGEUR_CARTE; i++) {
 			this.tabCases[i] = -1; // toutes les cases de la carte sont vides au début
 		}
+
 	}
 	
 	
@@ -58,9 +58,7 @@ public class FenetreJeu extends JFrame{
 	/**
 	 * Renvoie le panel contenant la carte de jeu
 	 */
-	public PanneauJeu getPanneau() {
-		return this.carteJeu;
-	}
+	
 	
 	
 	/**
@@ -103,8 +101,8 @@ public class FenetreJeu extends JFrame{
                 ImageIcon imageicon = new ImageIcon("src/wargame/images/wargame2.jpg") ;
                 Image image = imageicon.getImage();
                 
+                
             	// Titre de la fenetre
-                JFrame.setDefaultLookAndFeelDecorated(true);
                 final FenetreJeu f = new FenetreJeu("Wargame");
                 f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 // Position de la fenetre sur l'ecran
@@ -115,6 +113,8 @@ public class FenetreJeu extends JFrame{
                 f.setResizable(false);
                 // Fenetre visible
                 f.setVisible(true);
+                carteJeu = new PanneauJeu(IConfig.HAUTEUR_CARTE, IConfig.LARGEUR_CARTE, IConfig.NB_PIX_CASE,
+						f.getTabCases(), f.getListeSoldats() , f.getListeObstacle());
                 
                 
                 f.setIconImage(imageicon.getImage());
@@ -132,12 +132,10 @@ public class FenetreJeu extends JFrame{
 					// On ajoute le panneau de jeu sur lequel on va jouer
                 	@Override
 					public void actionPerformed(ActionEvent e) {
-						f.carteJeu = new PanneauJeu(IConfig.HAUTEUR_CARTE, IConfig.LARGEUR_CARTE, IConfig.NB_PIX_CASE,
-								f.getTabCases(), f.getListeSoldats() , f.getListeObstacle());
-						
+                		
 						f.getContentPane().removeAll(); // Efface tous les panels du menu principale
 						f.repaint();
-						f.add(f.carteJeu); // Ajoute le panel avec la carte de jeu
+						f.add(carteJeu); // Ajoute le panel avec la carte de jeu
 						Soldat h;
 						Obstacle o;
 						// Test ajout de soldat ;
@@ -181,10 +179,6 @@ public class FenetreJeu extends JFrame{
 
                 // Ajout des composantes a la fenetre
                 f.add(panelCouverture);
-                
-     
-                
-                
             }
         };
         //GUI must start on EventDispatchThread:

@@ -22,8 +22,14 @@ public class PanneauJeu extends JPanel{
     BufferedImage imageHobbit, imageHumain, imageElf, imageNain; // images Heros
     BufferedImage imageTroll, imageGobelin, imageOrc;
     BufferedImage imageRocher,imageEau,imageForet;
-    
+    JLabel statusLabel;
+    JButton menu;
+    JButton sauvgarder;
+
+
     Carte carte ;
+    
+    
     
     // number n'est pas private car utilisée dans d'autres classes (classe PanneauJeu ?)
     static int number, row, column;
@@ -69,11 +75,29 @@ public class PanneauJeu extends JPanel{
         try { imageForet = ImageIO.read(new File("src/wargame/images/arbre.jpg"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du obstacle !");}
         
+        setLayout(null);
+
         // On veut que ce panel contenant la carte du jeu couvre toute la fenetre (ou pas ?)
-        this.setBounds(0, 0, IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/5, IConfig.LONGUEUR_FENETRE - IConfig.LONGUEUR_FENETRE/8);
+        this.setBounds(0, 0, IConfig.LARGEUR_FENETRE , IConfig.LONGUEUR_FENETRE );
         
-        PanneauJeu.dimension = getHexagon(0, 0).getBounds().getSize();  
-      
+        statusLabel = new JLabel(" ");
+	    statusLabel.setBounds(200, IConfig.LONGUEUR_FENETRE - IConfig.LONGUEUR_FENETRE/14,  400, 35);
+	    statusLabel.setFont(new Font("Tahoma", Font.BOLD, 15));
+	    statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	    statusLabel.setForeground(Color.BLACK);
+        statusLabel.setText("status Heros");
+        
+        menu = new JButton(" Menu ");
+        menu.setBounds(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/6,220,100,40);
+        this.add(menu,BorderLayout.EAST);
+        
+        sauvgarder = new JButton(" Sauvegarder la Partie ");
+        sauvgarder.setBounds(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/5,300,170,40);
+        this.add(sauvgarder,BorderLayout.EAST);
+
+        this.add(statusLabel, BorderLayout.SOUTH);
+        PanneauJeu.dimension = getHexagon(0, 0).getBounds().getSize();
+        
     	MouseInputAdapter mouseHandler = new MouseInputAdapter() {
     		Position pos = null, posSoldat = null;
         	Soldat soldat = null ;
@@ -91,6 +115,9 @@ public class PanneauJeu extends JPanel{
                     System.out.println("Hexagon " + (PanneauJeu.number));
                     	pos = new Position(); pos.setPosition(e.getPoint());
                     	soldat = carte.trouveHeros(pos); 
+                    	
+                        statusLabel.setText(" Point : " + listeSoldats.get(tabCases[PanneauJeu.number]).getPoints() + ", Portee : " +listeSoldats.get(tabCases[PanneauJeu.number]).getPortee()+", Tour : "+listeSoldats.get(tabCases[PanneauJeu.number]).getTour());
+
                     	if( soldat != null) { // heros trouvé à la position du clique de la souris                 		
                     		posSoldat = soldat.getPosition();
                     		PanneauJeu.soldat = soldat;
