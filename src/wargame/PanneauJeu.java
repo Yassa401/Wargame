@@ -22,6 +22,7 @@ public class PanneauJeu extends JPanel{
     BufferedImage imageHobbit, imageHumain, imageElf, imageNain; // images Heros
     BufferedImage imageTroll, imageGobelin, imageOrc;
     BufferedImage imageRocher,imageEau,imageForet;
+    BufferedImage imageMap; // arriere plan de la carte de jeu
     JLabel statusLabel;
     JButton menu;
     JButton sauvgarder;
@@ -60,7 +61,7 @@ public class PanneauJeu extends JPanel{
         catch(Exception e) { System.out.println("Erreur pour charger l'image du humain !");}
         try { imageElf = ImageIO.read(new File("src/wargame/images/elf.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
-        try { imageNain = ImageIO.read(new File("src/wargame/images/nain.jpg"));}
+        try { imageNain = ImageIO.read(new File("src/wargame/images/nain.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
         try { imageOrc = ImageIO.read(new File("src/wargame/images/orc.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
@@ -72,7 +73,9 @@ public class PanneauJeu extends JPanel{
         catch(Exception e) { System.out.println("Erreur pour charger l'image du obstacle !");}
         try { imageRocher = ImageIO.read(new File("src/wargame/images/rocher.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du obstacle !");}
-        try { imageForet = ImageIO.read(new File("src/wargame/images/arbre.jpg"));}
+        try { imageForet = ImageIO.read(new File("src/wargame/images/arbre.png"));}
+        catch(Exception e) { System.out.println("Erreur pour charger l'image du obstacle !");}
+        try { imageMap = ImageIO.read(new File("src/wargame/images/mipui2.png"));}
         catch(Exception e) { System.out.println("Erreur pour charger l'image du obstacle !");}
         
         setLayout(null);
@@ -175,6 +178,11 @@ public class PanneauJeu extends JPanel{
         g2d.setStroke(bs1);
         PanneauJeu.number = -1;
         setBackground(IConfig.COULEUR_VIDE);
+        // Dessine arriere plan
+        g2d.drawImage(imageMap, 0, 0, 
+        		IConfig.LARGEUR_FENETRE-IConfig.LARGEUR_FENETRE/4 + IConfig.NB_PIX_CASE, IConfig.LONGUEUR_FENETRE-IConfig.LONGUEUR_FENETRE/14,
+        		null);
+        
         // Dessine tous les hexagones de la carte
         for (int row = 0; row < rows; row +=2) {
             for (int column = 0; column < columns; column++) {
@@ -462,8 +470,6 @@ public class PanneauJeu extends JPanel{
     			}
     		}
     	}
-    
-    	
     }
-
+    
 }

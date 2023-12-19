@@ -99,7 +99,7 @@ public class Carte implements ICarte {
 		else {
 			return null; // toutes les positions adjacentes sont remplies (rare mais ça peut arriver)
 		}
-		if(row < 0 || row > IConfig.HAUTEUR_CARTE || column < 0 || column > IConfig.LARGEUR_CARTE) {
+		if(row < 0 || row >= IConfig.HAUTEUR_CARTE || column < 0 || column >= IConfig.LARGEUR_CARTE) {
 			return trouvePositionVide(pos);
 		}
 		posVide = new Position(PanneauJeu.dimension);
