@@ -81,7 +81,7 @@ public class PanneauJeu extends JPanel{
         setLayout(null);
 
         // On veut que ce panel contenant la carte du jeu couvre toute la fenetre (ou pas ?)
-        this.setBounds(0, 0, IConfig.LARGEUR_FENETRE , IConfig.LONGUEUR_FENETRE );
+        this.setBounds(0, 0, (int)(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/4.5) , IConfig.LONGUEUR_FENETRE );
         
         statusLabel = new JLabel(" ");
 	    statusLabel.setBounds(200, IConfig.LONGUEUR_FENETRE - IConfig.LONGUEUR_FENETRE/14,  400, 35);
@@ -90,13 +90,6 @@ public class PanneauJeu extends JPanel{
 	    statusLabel.setForeground(Color.BLACK);
         statusLabel.setText("status Heros");
         
-        menu = new JButton(" Menu ");
-        menu.setBounds(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/6,220,100,40);
-        this.add(menu,BorderLayout.EAST);
-        
-        sauvgarder = new JButton(" Sauvegarder la Partie ");
-        sauvgarder.setBounds(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/5,300,170,40);
-        this.add(sauvgarder,BorderLayout.EAST);
 
         this.add(statusLabel, BorderLayout.SOUTH);
         PanneauJeu.dimension = getHexagon(0, 0).getBounds().getSize();
@@ -337,7 +330,7 @@ public class PanneauJeu extends JPanel{
     	g2d.setColor(Color.cyan);
         g2d.setStroke(bs3);
         
-    	if(row%2 == 1) {
+    	if(row%2 == 1 ) {
     		x = column * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
         	y = (int) (row * side * 1.5 + 0.5);
         	
@@ -354,53 +347,77 @@ public class PanneauJeu extends JPanel{
     			if ((column-i) < 0) {
             		continue;
     			}
-    			
     			x = (column-i) * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
     			focusedHexagon = getHexagon(x,y);
     	        g2d.draw(focusedHexagon);
     		}
-    		
-    		if((row+1) < IConfig.HAUTEUR_CARTE) {
-    			y = (int) ((row+1) * side * 1.5); // en bas
-    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en bas à droite
-    				if ((column+i) >= IConfig.LARGEUR_CARTE) {
-            			continue;
-    				}
-    			
-    				x = (column+i) * PanneauJeu.dimension.width;
-    				focusedHexagon = getHexagon(x,y);
-    	        	g2d.draw(focusedHexagon);
-    			}
-    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en bas à gauche
-    				if ((column-i) < 0) {
-            			continue;
-    				}
-    			
-    				x = (column-i) * PanneauJeu.dimension.width;
-    				focusedHexagon = getHexagon(x,y);
-    	        	g2d.draw(focusedHexagon);
-    			}
-    		}
-    		
-    		if((row-1) >= 0) { 
-    			y = (int) ((row-1) * side * 1.5); // en haut
-    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en haut à droite
-    				if ((column+i) >= IConfig.LARGEUR_CARTE) {
-            			continue;
-    				}
-    			
-    				x = (column+i) * PanneauJeu.dimension.width;
-    				focusedHexagon = getHexagon(x,y);
-    	        	g2d.draw(focusedHexagon);
-    			}
-    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en haut à gauche
-    				if ((column-i) < 0)
-            			continue;
-    			
-    				x = (column-i) * PanneauJeu.dimension.width;
-    				focusedHexagon = getHexagon(x,y);
-    	        	g2d.draw(focusedHexagon);
-    			}
+    		for (int j=1; j <= soldat.getPortee(); j++) {
+	    		if((row+j) < IConfig.HAUTEUR_CARTE) {
+	    			y = (int) ((row+j) * side * 1.5); // en bas
+	    			for(int i = 0 ; i <= soldat.getPortee()-j+1; i++) { // en bas à droite
+	    				if ((column+i) >= IConfig.LARGEUR_CARTE) {
+	            			continue;
+	    				}
+	    				if((row+j)%2 == 1) {
+	    					x = (column+i) * PanneauJeu.dimension.width+ PanneauJeu.dimension.width / 2;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}else {
+	    					x = (column+i) * PanneauJeu.dimension.width;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}
+	    				
+	    			}
+	    			for(int i = 0 ; i <= soldat.getPortee()-j+1; i++) { // en bas à gauche
+	    				if ((column-i) < 0) {
+	            			continue;
+	    				}
+	    				if((row+j)%2 == 1) {
+	    					x = (column-i) * PanneauJeu.dimension.width+ PanneauJeu.dimension.width / 2;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}else {
+	    					x = (column-i+1) * PanneauJeu.dimension.width;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}
+	    			}
+	    		}
+	    		
+	    		if((row-j) >= 0) { 
+	    			y = (int) ((row-j) * side * 1.5); // en haut
+	    			for(int i = 0 ; i <= soldat.getPortee()-j+1; i++) { // en haut à droite
+	    				if ((column+i) >= IConfig.LARGEUR_CARTE) {
+	            			continue;
+	    				}
+	    				if((row+j)%2 == 1) {
+	    					x = (column+i) * PanneauJeu.dimension.width+ PanneauJeu.dimension.width / 2;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}else {
+	    					x = (column+i) * PanneauJeu.dimension.width;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}
+	    				
+	    			}
+	    			for(int i = 0 ; i <= soldat.getPortee()-j+1; i++) { // en haut à gauche
+	    				if ((column-i) < 0) {
+	            			continue;
+	            			}
+	    				if((row+j)%2 == 1) {
+	    					x = (column-i) * PanneauJeu.dimension.width+ PanneauJeu.dimension.width / 2;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}else {
+	    					x = (column-i+1) * PanneauJeu.dimension.width;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}
+	    				
+	    			}
+	    		}
     		}
     		
     	}
@@ -426,48 +443,73 @@ public class PanneauJeu extends JPanel{
     	        g2d.draw(focusedHexagon);
     		}
     		
-    		if((row+1) < IConfig.HAUTEUR_CARTE) {
-    			y = (int) ((row+1) * side * 1.5); // en bas
-    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en bas à droite
-    				if ((column+i) >= IConfig.LARGEUR_CARTE) {
-            			continue;
-    				}
-    			
-    				x = (column+i) * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
-    				focusedHexagon = getHexagon(x,y);
-    	        	g2d.draw(focusedHexagon);
-    			}
-    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en bas à gauche
-    				if ((column-i) < 0) {
-            			continue;
-    				}
-    			
-    				x = (column-i) * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
-    				focusedHexagon = getHexagon(x,y);
-    	        	g2d.draw(focusedHexagon);
-    			}
-    		}
-    		
-    		if((row-1) >= 0) {
-    			y = (int) ((row-1) * side * 1.5); // en haut
-    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en haut à droite
-    				if ((column+i) >= IConfig.LARGEUR_CARTE) {
-    					continue;
-    				}
-    			
-    				x = (column+i) * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
-    				focusedHexagon = getHexagon(x,y);
-    				g2d.draw(focusedHexagon);
-    			}
-    			for(int i = 0 ; i <= soldat.getPortee(); i++) { // en haut à gauche
-    				if ((column-i) < 0) {
-    					continue;
-    				}
-    			
-    				x = (column-i) * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
-    				focusedHexagon = getHexagon(x,y);
-    				g2d.draw(focusedHexagon);
-    			}
+    		for (int j=1; j <= soldat.getPortee(); j++) {
+	
+	    		if((row+j) < IConfig.HAUTEUR_CARTE) {
+	    			y = (int) ((row+j) * side * 1.5); // en bas
+	    			for(int i = 0 ; i <= soldat.getPortee()-j+1; i++) { // en bas à droite
+	    				if ((column+i) >= IConfig.LARGEUR_CARTE) {
+	            			continue;
+	    				}
+	    				if((row+j)%2 == 1) {
+	    					x = (column+i-1) * PanneauJeu.dimension.width+ PanneauJeu.dimension.width / 2;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}else {
+	    					x = (column+i) * PanneauJeu.dimension.width;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}
+	    			}
+	    			for(int i = 0 ; i <= soldat.getPortee()-j+1; i++) { // en bas à gauche
+	    				if ((column-i) < 0) {
+	            			continue;
+	    				}
+	    			
+	    				if((row+j)%2 == 1) {
+	    					x = (column-i) * PanneauJeu.dimension.width+ PanneauJeu.dimension.width / 2;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}else {
+	    					x = (column-i) * PanneauJeu.dimension.width;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}
+	    			}
+	    		}
+	    		
+	    		if((row-j) >= 0) {
+	    			y = (int) ((row-j) * side * 1.5); // en haut
+	    			for(int i = 0 ; i <= soldat.getPortee()-j+1; i++) { // en haut à droite
+	    				if ((column+i) >= IConfig.LARGEUR_CARTE) {
+	    					continue;
+	    				}
+	    				if((row+j)%2 == 1) {
+	    					x = (column+i-1) * PanneauJeu.dimension.width+ PanneauJeu.dimension.width / 2;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}else {
+	    					x = (column+i) * PanneauJeu.dimension.width;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}
+	    			}
+	    			for(int i = 0 ; i <= soldat.getPortee()-j+1; i++) { // en haut à gauche
+	    				if ((column-i) < 0) {
+	    					continue;
+	    				}
+	    				if((row+j)%2 == 1) {
+	    					x = (column-i) * PanneauJeu.dimension.width+ PanneauJeu.dimension.width / 2;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}else {
+	    					x = (column-i) * PanneauJeu.dimension.width;
+		    				focusedHexagon = getHexagon(x,y);
+		    	        	g2d.draw(focusedHexagon);
+	    				}
+	    				
+	    			}
+	    		}
     		}
     	}
     }

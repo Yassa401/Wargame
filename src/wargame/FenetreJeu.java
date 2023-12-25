@@ -15,7 +15,9 @@ import java.util.HashMap;
  */
 public class FenetreJeu extends JFrame{
 	static PanneauJeu carteJeu;
-
+	static JButton menu;
+	static JButton sauvgarder;
+	public static JPanel panmenu ;
 	HashMap<Integer, Soldat> listeSoldats = new HashMap<Integer, Soldat>();
 	HashMap<Integer,Obstacle> listeObstacle = new HashMap<Integer,Obstacle>();
 	int tabCases[];
@@ -82,7 +84,7 @@ public class FenetreJeu extends JFrame{
 	 */
 	@Override
 	public void repaint() {
-		this.setBackground(IConfig.COULEUR_VIDE);
+		this.setBackground(Color.WHITE);
 	}
 	
 	
@@ -120,6 +122,15 @@ public class FenetreJeu extends JFrame{
                 f.setIconImage(imageicon.getImage());
                 f.setLayout(null) ;
                 
+                menu = new JButton(" Menu ");
+                menu.setBounds(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/6,220,100,40);
+                
+                
+                sauvgarder = new JButton(" Sauvegarder la Partie ");
+                sauvgarder.setBounds(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/5,300,170,40);
+               
+                
+                
                 //boutton1s à cliquer dans le menu principale
                 JButton buttonNewGame = new JButton("Nouvelle partie");
                 buttonNewGame.setSize(150, 30);
@@ -134,8 +145,10 @@ public class FenetreJeu extends JFrame{
 					public void actionPerformed(ActionEvent e) {
                 		
 						f.getContentPane().removeAll(); // Efface tous les panels du menu principale
-						f.repaint();
+						f.add(menu);
+						f.add(sauvgarder);
 						f.add(carteJeu); // Ajoute le panel avec la carte de jeu
+						f.repaint();
 						Soldat h;
 						Obstacle o;
 						// Test ajout de soldat ;
@@ -179,6 +192,17 @@ public class FenetreJeu extends JFrame{
 
                 // Ajout des composantes a la fenetre
                 f.add(panelCouverture);
+                menu.addActionListener(new ActionListener(){
+        			// On ajoute le panneau de jeu sur lequel on va jouer
+                	@Override
+        			public void actionPerformed(ActionEvent e) {
+                		
+                		f.removeAll();
+                		f.add(panelCouverture);
+                		f.repaint();
+        				System.out.println("Nouvelle partie !");
+        			}
+                });
             }
         };
         //GUI must start on EventDispatchThread:
