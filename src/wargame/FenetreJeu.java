@@ -134,7 +134,7 @@ public class FenetreJeu extends JFrame{
                 //boutton1s à cliquer dans le menu principale
                 JButton buttonNewGame = new JButton("Nouvelle partie");
                 buttonNewGame.setSize(150, 30);
-                buttonNewGame.setLocation(IConfig.LARGEUR_FENETRE/2 - IConfig.LARGEUR_FENETRE/11, IConfig.LONGUEUR_FENETRE/2);
+                buttonNewGame.setLocation(IConfig.LARGEUR_FENETRE/2 - IConfig.LARGEUR_FENETRE/13, IConfig.LONGUEUR_FENETRE/2);
                 //buttonNewGame.setHorizontalAlignment(JButton.CENTER); buttonNewGame.setVerticalAlignment(JButton.EAST);
                 buttonNewGame.setHorizontalTextPosition(JButton.CENTER); buttonNewGame.setVerticalTextPosition(JButton.CENTER);
                 buttonNewGame.setFocusable(false);
@@ -174,8 +174,25 @@ public class FenetreJeu extends JFrame{
 						// Test ajout d'obstacle ;
 						
 						System.out.println("Nouvelle partie !");
+						
 					}
                 });
+                JButton continue_partie = new JButton("continue");
+                continue_partie.setSize(150, 30);
+                continue_partie.setLocation(IConfig.LARGEUR_FENETRE/2 - IConfig.LARGEUR_FENETRE/13, 400);
+                continue_partie.setHorizontalTextPosition(JButton.CENTER); 
+                continue_partie.setVerticalTextPosition(JButton.CENTER);
+                continue_partie.setFocusable(false);
+                
+                
+                
+                JButton parti_sauv = new JButton("partie sauvegarder");
+                parti_sauv.setSize(150, 30);
+                parti_sauv.setLocation(IConfig.LARGEUR_FENETRE/2 - IConfig.LARGEUR_FENETRE/13, 450);
+                parti_sauv.setHorizontalTextPosition(JButton.CENTER); 
+                parti_sauv.setVerticalTextPosition(JButton.CENTER);
+                parti_sauv.setFocusable(false);
+                
                 
                 JPanel panelCouverture = new JPanel() {
                 	@Override 
@@ -188,18 +205,23 @@ public class FenetreJeu extends JFrame{
                 panelCouverture.setBounds(0, 0, IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE);
                 panelCouverture.setLayout(null);
                 panelCouverture.add(buttonNewGame);
+                panelCouverture.add(continue_partie);
+                panelCouverture.add(parti_sauv);
+
                 
 
                 // Ajout des composantes a la fenetre
                 f.add(panelCouverture);
+                
                 menu.addActionListener(new ActionListener(){
         			// On ajoute le panneau de jeu sur lequel on va jouer
                 	@Override
         			public void actionPerformed(ActionEvent e) {
                 		
-                		f.removeAll();
-                		f.add(panelCouverture);
+                		f.remove(carteJeu);
                 		f.repaint();
+                		f.add(panelCouverture);
+                		
         				System.out.println("Nouvelle partie !");
         			}
                 });
