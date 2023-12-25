@@ -78,16 +78,6 @@ public class FenetreJeu extends JFrame{
 		FenetreJeu.indice += 1;
 	}
 	
-	/** 
-	 * @brief affiche une fenetre vide
-	 * @return  
-	 */
-	@Override
-	public void repaint() {
-		this.setBackground(Color.WHITE);
-	}
-	
-	
 	/*______________________________ PROGRAMME PRINCIPALE ___________________________________ */
 	
 	/**
@@ -177,6 +167,7 @@ public class FenetreJeu extends JFrame{
 						
 					}
                 });
+                
                 JButton continue_partie = new JButton("continue");
                 continue_partie.setSize(150, 30);
                 continue_partie.setLocation(IConfig.LARGEUR_FENETRE/2 - IConfig.LARGEUR_FENETRE/13, 400);
@@ -218,11 +209,11 @@ public class FenetreJeu extends JFrame{
                 	@Override
         			public void actionPerformed(ActionEvent e) {
                 		
-                		f.remove(carteJeu);
+						f.getContentPane().removeAll(); // efface la carte et les boutons menu et sauvegarde
                 		f.repaint();
-                		f.add(panelCouverture);
+                		f.add(panelCouverture); // ajoute les boutons du menu principal
                 		
-        				System.out.println("Nouvelle partie !");
+        				System.out.println("Retour menu principal !");
         			}
                 });
             }
