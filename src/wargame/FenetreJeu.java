@@ -1,12 +1,8 @@
-/**
- * 
- */
 package wargame;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.*;
 import java.util.HashMap;
 
@@ -35,9 +31,7 @@ public class FenetreJeu extends JFrame{
 		for(int i=0; i<IConfig.HAUTEUR_CARTE*IConfig.LARGEUR_CARTE; i++) {
 			this.tabCases[i] = -1; // toutes les cases de la carte sont vides au début
 		}
-
 	}
-	
 	
 	/**
 	 * Renvoie le tableau de cases de la carte
@@ -61,8 +55,6 @@ public class FenetreJeu extends JFrame{
 	 * Renvoie le panel contenant la carte de jeu
 	 */
 	
-	
-	
 	/**
 	 * @brief ajout de soldat dans carte
 	 * @param Soldat : l'objet soldat créé à ajouter
@@ -76,6 +68,12 @@ public class FenetreJeu extends JFrame{
 		this.listeObstacle.put(FenetreJeu.indice, obstacle);
 		this.tabCases[obstacle.getPosition().getNumeroCase()] = FenetreJeu.indice;
 		FenetreJeu.indice += 1;
+	}
+	public void removeS() {
+		this.listeSoldats.clear();
+	}
+	public void removeO() {
+		this.listeObstacle.clear();
 	}
 	
 	/*______________________________ PROGRAMME PRINCIPALE ___________________________________ */
@@ -108,9 +106,9 @@ public class FenetreJeu extends JFrame{
                 carteJeu = new PanneauJeu(IConfig.HAUTEUR_CARTE, IConfig.LARGEUR_CARTE, IConfig.NB_PIX_CASE,
 						f.getTabCases(), f.getListeSoldats() , f.getListeObstacle());
                 
-                
                 f.setIconImage(imageicon.getImage());
                 f.setLayout(null) ;
+               
                 
                 menu = new JButton(" Menu ");
                 menu.setBounds(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/6,220,100,40);
@@ -120,16 +118,65 @@ public class FenetreJeu extends JFrame{
                 sauvgarder.setBounds(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/5,300,170,40);
                
                 
-                
                 //boutton1s à cliquer dans le menu principale
                 JButton buttonNewGame = new JButton("Nouvelle partie");
                 buttonNewGame.setSize(150, 30);
                 buttonNewGame.setLocation(IConfig.LARGEUR_FENETRE/2 - IConfig.LARGEUR_FENETRE/13, IConfig.LONGUEUR_FENETRE/2);
                 //buttonNewGame.setHorizontalAlignment(JButton.CENTER); buttonNewGame.setVerticalAlignment(JButton.EAST);
-                buttonNewGame.setHorizontalTextPosition(JButton.CENTER); buttonNewGame.setVerticalTextPosition(JButton.CENTER);
+                buttonNewGame.setHorizontalTextPosition(JButton.CENTER); 
+                buttonNewGame.setVerticalTextPosition(JButton.CENTER);
                 buttonNewGame.setFocusable(false);
                 //pour effectuer une action si on clique sur le button
                 buttonNewGame.addActionListener(new ActionListener(){
+					// On ajoute le panneau de jeu sur lequel on va jouer
+                	@Override
+					public void actionPerformed(ActionEvent e) {
+						f.getContentPane().removeAll(); // Efface tous les panels du menu principale
+						f.add(menu);
+						f.add(sauvgarder);
+						f.add(carteJeu); // Ajoute le panel avec la carte de jeu
+						f.repaint();
+						
+						for(int i=0; i<IConfig.HAUTEUR_CARTE*IConfig.LARGEUR_CARTE; i++) {
+							f.tabCases[i] = -1; // toutes les cases de la carte sont vides au début
+						}
+						f.removeS();
+						f.removeO();
+						
+						Soldat h;
+						Obstacle o;
+						
+						// Test ajout de soldat ;
+						for(int i = 0 ; i < IConfig.NB_HEROS; i++) {
+							h = new Heros();
+							if(f.tabCases[h.getPosition().getNumeroCase()] == -1) {
+								f.ajoutSoldat(h);
+							}
+						}
+						for(int i = 0 ; i < IConfig.NB_MONSTRES; i++) {
+							h = new Monstre();
+							if(f.tabCases[h.getPosition().getNumeroCase()] == -1) {
+								f.ajoutSoldat(h);
+							}
+						}				
+						// Test ajout d'obstacle ;
+						for(int i = 0 ; i < IConfig.NB_OBSTACLES; i++) {
+							o = new Obstacle();
+							if(f.tabCases[o.getPosition().getNumeroCase()] == -1) {
+								f.ajoutObstacle(o);
+							}
+						}
+						System.out.println("Nouvelle partie !");
+					}
+                });
+                
+                JButton continue_partie = new JButton("continue");
+                continue_partie.setSize(150, 30);
+                continue_partie.setLocation(IConfig.LARGEUR_FENETRE/2 - IConfig.LARGEUR_FENETRE/13, 400);
+                continue_partie.setHorizontalTextPosition(JButton.CENTER); 
+                continue_partie.setVerticalTextPosition(JButton.CENTER);
+                continue_partie.setFocusable(false);
+                continue_partie.addActionListener(new ActionListener(){
 					// On ajoute le panneau de jeu sur lequel on va jouer
                 	@Override
 					public void actionPerformed(ActionEvent e) {
@@ -139,8 +186,10 @@ public class FenetreJeu extends JFrame{
 						f.add(sauvgarder);
 						f.add(carteJeu); // Ajoute le panel avec la carte de jeu
 						f.repaint();
+						
 						Soldat h;
 						Obstacle o;
+						
 						// Test ajout de soldat ;
 						for(int i = 0 ; i < IConfig.NB_HEROS; i++) {
 							h = new Heros();
@@ -160,21 +209,10 @@ public class FenetreJeu extends JFrame{
 								f.ajoutObstacle(o);
 							}
 						}
-						
 						// Test ajout d'obstacle ;
-						
 						System.out.println("Nouvelle partie !");
-						
 					}
                 });
-                
-                JButton continue_partie = new JButton("continue");
-                continue_partie.setSize(150, 30);
-                continue_partie.setLocation(IConfig.LARGEUR_FENETRE/2 - IConfig.LARGEUR_FENETRE/13, 400);
-                continue_partie.setHorizontalTextPosition(JButton.CENTER); 
-                continue_partie.setVerticalTextPosition(JButton.CENTER);
-                continue_partie.setFocusable(false);
-                
                 
                 
                 JButton parti_sauv = new JButton("partie sauvegarder");
@@ -198,7 +236,6 @@ public class FenetreJeu extends JFrame{
                 panelCouverture.add(buttonNewGame);
                 panelCouverture.add(continue_partie);
                 panelCouverture.add(parti_sauv);
-
                 
 
                 // Ajout des composantes a la fenetre
@@ -221,5 +258,4 @@ public class FenetreJeu extends JFrame{
         //GUI must start on EventDispatchThread:
         SwingUtilities.invokeLater(gui);
     }
-
 }

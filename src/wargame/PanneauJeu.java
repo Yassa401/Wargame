@@ -5,11 +5,9 @@ import java.awt.event.*;
 import java.awt.image.*;
 import java.io.File;
 import java.util.HashMap;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.*;
-
 import javax.swing.event.MouseInputAdapter;
 
 public class PanneauJeu extends JPanel{
@@ -31,12 +29,10 @@ public class PanneauJeu extends JPanel{
     Carte carte ;
     
     
-    
     // number n'est pas private car utilisée dans d'autres classes (classe PanneauJeu ?)
     static int number, row, column;
     // PanneauJeu.dimension aussi !
     static Dimension dimension;
-    
     static Position posSoldat = null;
 	static Soldat soldat = null ;
     
@@ -93,7 +89,6 @@ public class PanneauJeu extends JPanel{
 
         this.add(statusLabel, BorderLayout.SOUTH);
         PanneauJeu.dimension = getHexagon(0, 0).getBounds().getSize();
-        
     	MouseInputAdapter mouseHandler = new MouseInputAdapter() {
     		Position pos = null, posSoldat = null;
         	Soldat soldat = null ;
@@ -109,20 +104,16 @@ public class PanneauJeu extends JPanel{
             	mousePosition.setPosition(e.getPoint());
             	if (PanneauJeu.number != -1) {
                     System.out.println("Hexagon " + (PanneauJeu.number));
-                    	pos = new Position(); pos.setPosition(e.getPoint());
-                    	soldat = carte.trouveHeros(pos); 
-                    	
-                        statusLabel.setText(" Point : " + listeSoldats.get(tabCases[PanneauJeu.number]).getPoints() + ", Portee : " +listeSoldats.get(tabCases[PanneauJeu.number]).getPortee()+", Tour : "+listeSoldats.get(tabCases[PanneauJeu.number]).getTour());
-
-                    	if( soldat != null) { // heros trouvé à la position du clique de la souris                 		
-                    		posSoldat = soldat.getPosition();
-                    		PanneauJeu.soldat = soldat;
-                    		PanneauJeu.posSoldat = posSoldat;
-                    	}
+	                	pos = new Position(); pos.setPosition(e.getPoint());
+	                	soldat = carte.trouveHeros(pos); 
+	                    statusLabel.setText(" Point : " + listeSoldats.get(tabCases[PanneauJeu.number]).getPoints() + ", Portee : " +listeSoldats.get(tabCases[PanneauJeu.number]).getPortee()+", Tour : "+listeSoldats.get(tabCases[PanneauJeu.number]).getTour());
+	                	if( soldat != null) { // heros trouvé à la position du clique de la souris                 		
+	                		posSoldat = soldat.getPosition();
+	                		PanneauJeu.soldat = soldat;
+	                		PanneauJeu.posSoldat = posSoldat;
+	                	}
                 }
-            	
             }
-            
             @Override
             public void mouseDragged(final MouseEvent e) {
             	mousePosition.setPosition(e.getPoint());
@@ -201,18 +192,15 @@ public class PanneauJeu extends JPanel{
                     PanneauJeu.row = row ; PanneauJeu.column = column ;
                     PanneauJeu.number = row * columns + column;
                 }
-                g2d.draw(hexagon);
-                
+                g2d.draw(hexagon);   
             }
         }
         // Dessine les soldats de la carte
         paintAll(g2d);
-        
         //si Soldat selectionné, dessine les cases à sa portée
         if(PanneauJeu.soldat != null) {
         	paintPortee(g2d, PanneauJeu.posSoldat, PanneauJeu.soldat);
         }
-        
         
         if (PanneauJeu.number != -1) {
             g2d.setColor(Color.red);
