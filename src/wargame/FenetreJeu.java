@@ -34,26 +34,27 @@ public class FenetreJeu extends JFrame{
 	}
 	
 	/**
-	 * Renvoie le tableau de cases de la carte
+	 * @brief Renvoie le tableau de cases de la carte
 	 */
 	public int[] getTabCases() {
 		return this.tabCases;
 	}
 	
 	/**
-	 * Renvoie HashMap contenant les informations sur les soldats
+	 * @brief Renvoie HashMap contenant les informations sur les soldats
+	 * @return Hashmap de liste de soldats
 	 */
 	public HashMap<Integer, Soldat> getListeSoldats(){
 		return this.listeSoldats;
 	}
 	
+	/**
+	 * @brief Renvoie HashMap contenant les informations sur les obstacles
+	 * @return Hashmap de liste d'obstacles
+	 */
 	public HashMap<Integer,Obstacle> getListeObstacle(){
 		return this.listeObstacle;
 	}
-	
-	/**
-	 * Renvoie le panel contenant la carte de jeu
-	 */
 	
 	/**
 	 * @brief ajout de soldat dans carte
@@ -64,16 +65,67 @@ public class FenetreJeu extends JFrame{
 		this.tabCases[soldat.getPosition().getNumeroCase()] = FenetreJeu.indice; // ===> tabCases[numCase] = indiceHashmap;
 		FenetreJeu.indice += 1;
 	}
+	
+	/**
+	 * @brief ajout de obstacle dans carte
+	 * @param obstacle : l'objet obstacle créé à ajouter
+	 */
 	public void ajoutObstacle(Obstacle obstacle) {
 		this.listeObstacle.put(FenetreJeu.indice, obstacle);
 		this.tabCases[obstacle.getPosition().getNumeroCase()] = FenetreJeu.indice;
 		FenetreJeu.indice += 1;
 	}
-	public void removeS() {
+	
+	/**
+	 * @brief Efface les soldats de la carte
+	 */
+	public void removeSoldats() {
 		this.listeSoldats.clear();
 	}
-	public void removeO() {
+	
+	/**
+	 * @brief Efface les obstacles de la carte
+	 */
+	public void removeObstacles() {
 		this.listeObstacle.clear();
+	}
+	
+	public void nouvellePartie() {
+		Soldat h;
+		Obstacle o;
+		FenetreJeu.indice = 0;
+		
+		// Efface les soldats et obstacles de la partie précédente
+		this.removeSoldats();
+		this.removeObstacles();
+		for(int i=0; i<IConfig.HAUTEUR_CARTE*IConfig.LARGEUR_CARTE; i++) {
+			this.tabCases[i] = -1; // toutes les cases de la carte sont vides au début
+		}
+		
+		// Ajout de soldats ;
+		for(int i = 0 ; i < IConfig.NB_HEROS;) {
+			h = new Heros();
+			if(this.tabCases[h.getPosition().getNumeroCase()] == -1) {
+				this.ajoutSoldat(h);
+				i++;
+			}
+		}
+		for(int i = 0 ; i < IConfig.NB_MONSTRES;) {
+			h = new Monstre();
+			if(this.tabCases[h.getPosition().getNumeroCase()] == -1) {
+				this.ajoutSoldat(h);
+				i++;
+			}
+		}				
+		// Ajout d'obstacles ;
+		for(int i = 0 ; i < IConfig.NB_OBSTACLES;) {
+			o = new Obstacle();
+			if(this.tabCases[o.getPosition().getNumeroCase()] == -1) {
+				this.ajoutObstacle(o);
+				i++;
+			}
+		}
+		
 	}
 	
 	/*______________________________ PROGRAMME PRINCIPALE ___________________________________ */
@@ -137,40 +189,15 @@ public class FenetreJeu extends JFrame{
 						f.add(carteJeu); // Ajoute le panel avec la carte de jeu
 						f.repaint();
 						
-						for(int i=0; i<IConfig.HAUTEUR_CARTE*IConfig.LARGEUR_CARTE; i++) {
-							f.tabCases[i] = -1; // toutes les cases de la carte sont vides au début
-						}
-						f.removeS();
-						f.removeO();
+						// Initialise les soldats et obstacles
+						f.nouvellePartie();
 						
-						Soldat h;
-						Obstacle o;
-						
-						// Test ajout de soldat ;
-						for(int i = 0 ; i < IConfig.NB_HEROS; i++) {
-							h = new Heros();
-							if(f.tabCases[h.getPosition().getNumeroCase()] == -1) {
-								f.ajoutSoldat(h);
-							}
-						}
-						for(int i = 0 ; i < IConfig.NB_MONSTRES; i++) {
-							h = new Monstre();
-							if(f.tabCases[h.getPosition().getNumeroCase()] == -1) {
-								f.ajoutSoldat(h);
-							}
-						}				
-						// Test ajout d'obstacle ;
-						for(int i = 0 ; i < IConfig.NB_OBSTACLES; i++) {
-							o = new Obstacle();
-							if(f.tabCases[o.getPosition().getNumeroCase()] == -1) {
-								f.ajoutObstacle(o);
-							}
-						}
 						System.out.println("Nouvelle partie !");
+						
 					}
                 });
                 
-                JButton continue_partie = new JButton("continue");
+                JButton continue_partie = new JButton("Continue partie");
                 continue_partie.setSize(150, 30);
                 continue_partie.setLocation(IConfig.LARGEUR_FENETRE/2 - IConfig.LARGEUR_FENETRE/13, 400);
                 continue_partie.setHorizontalTextPosition(JButton.CENTER); 
@@ -187,30 +214,7 @@ public class FenetreJeu extends JFrame{
 						f.add(carteJeu); // Ajoute le panel avec la carte de jeu
 						f.repaint();
 						
-						Soldat h;
-						Obstacle o;
-						
-						// Test ajout de soldat ;
-						for(int i = 0 ; i < IConfig.NB_HEROS; i++) {
-							h = new Heros();
-							if(f.tabCases[h.getPosition().getNumeroCase()] == -1) {
-								f.ajoutSoldat(h);
-							}
-						}
-						for(int i = 0 ; i < IConfig.NB_MONSTRES; i++) {
-							h = new Monstre();
-							if(f.tabCases[h.getPosition().getNumeroCase()] == -1) {
-								f.ajoutSoldat(h);
-							}
-						}
-						for(int i = 0 ; i < IConfig.NB_OBSTACLES; i++) {
-							o = new Obstacle();
-							if(f.tabCases[o.getPosition().getNumeroCase()] == -1) {
-								f.ajoutObstacle(o);
-							}
-						}
-						// Test ajout d'obstacle ;
-						System.out.println("Nouvelle partie !");
+						System.out.println("Continue la partie !");
 					}
                 });
                 
