@@ -1,8 +1,9 @@
 package wargame;
 
 import java.awt.* ;
+import java.io.Serializable;
 
-public class Position implements IConfig{
+public class Position implements IConfig,Serializable{
 	
 	private int x, y;
 	private int number; // numero de la case

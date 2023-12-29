@@ -1,6 +1,8 @@
 package wargame;
 
-abstract class Soldat implements ISoldat {
+import java.io.Serializable;
+
+abstract class Soldat implements ISoldat,Serializable {
 	 private int pointsDeVie;
 	    private int tour;
 	    private int portee;

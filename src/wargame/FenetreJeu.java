@@ -3,13 +3,23 @@ package wargame;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import javax.swing.*;
+
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
  * Classe exécutable contenant la fenetre de jeu
  */
 public class FenetreJeu extends JFrame{
+    static String fullpathFolder="";
+
 	static PanneauJeu carteJeu;
 	static JButton menu;
 	static JButton sauvgarder;
@@ -128,6 +138,52 @@ public class FenetreJeu extends JFrame{
 		
 	}
 	
+	
+	public void sauvegarderPartie() {
+		sauvegarde_wargame gameState = new sauvegarde_wargame(listeSoldats, listeObstacle, tabCases);
+        JFileChooser folderchooser = new JFileChooser();
+        int cheminfol = folderchooser.showSaveDialog(null);
+        fullpathFolder = folderchooser.getSelectedFile().getAbsolutePath();
+        
+        System.out.println("path de notre fichier " +fullpathFolder);
+		
+		try (FileOutputStream fileOut = new FileOutputStream(fullpathFolder);
+             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+            out.writeObject(gameState);
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+	
+	
+	public void chargerPartie() {
+		JFileChooser folderchooser = new JFileChooser();
+		int cheminfol = folderchooser.showSaveDialog(null);
+		fullpathFolder = folderchooser.getSelectedFile().getAbsolutePath();
+
+	    try (FileInputStream fileIn = new FileInputStream(fullpathFolder);
+	         ObjectInputStream in = new ObjectInputStream(fileIn)) {
+	        sauvegarde_wargame gameState = (sauvegarde_wargame) in.readObject();
+	        
+	        
+	        System.out.println("contenu des tables :: ");
+	        
+	        //verifier le contenue de nos tables
+	        System.out.println("Liste Soldats: " + gameState.getListeSoldats());
+	        System.out.println("Liste Obstacles: " + gameState.getListeObstacle());
+	        System.out.println("Tab Cases: " + Arrays.toString(gameState.getTabCases()));
+	        
+	        this.listeSoldats = gameState.getListeSoldats();
+	        this.listeObstacle = gameState.getListeObstacle();
+	        this.tabCases = gameState.getTabCases();
+	        
+
+	        System.out.println("path de notre fichier " + fullpathFolder);
+	    } catch (IOException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	/*______________________________ PROGRAMME PRINCIPALE ___________________________________ */
 	
 	/**
@@ -168,7 +224,7 @@ public class FenetreJeu extends JFrame{
                 
                 sauvgarder = new JButton(" Sauvegarder la Partie ");
                 sauvgarder.setBounds(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/5,300,170,40);
-               
+                
                 
                 //boutton1s à cliquer dans le menu principale
                 JButton buttonNewGame = new JButton("Nouvelle partie");
@@ -225,6 +281,18 @@ public class FenetreJeu extends JFrame{
                 parti_sauv.setHorizontalTextPosition(JButton.CENTER); 
                 parti_sauv.setVerticalTextPosition(JButton.CENTER);
                 parti_sauv.setFocusable(false);
+                parti_sauv.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                    	f.chargerPartie() ;
+                    	f.getContentPane().removeAll(); // Efface tous les panels du menu principale
+						f.add(menu);
+						f.add(sauvgarder);
+						f.add(carteJeu); // Ajoute le panel avec la carte de jeu
+						f.repaint();
+                        System.out.println("Lets finish this partie !");
+                    }
+                });
                 
                 
                 JPanel panelCouverture = new JPanel() {
@@ -256,6 +324,14 @@ public class FenetreJeu extends JFrame{
                 		
         				System.out.println("Retour menu principal !");
         			}
+                });
+                sauvgarder.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                    	
+                        f.sauvegarderPartie();
+                        System.out.println("Partie sauvegardée !");
+                    }
                 });
             }
         };
