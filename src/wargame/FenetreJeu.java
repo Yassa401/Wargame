@@ -22,11 +22,12 @@ public class FenetreJeu extends JFrame{
 
 	static PanneauJeu carteJeu;
 	static JButton menu;
-	static JButton sauvgarder;
+	static JButton sauvegarder;
 	public static JPanel panmenu ;
 	HashMap<Integer, Soldat> listeSoldats = new HashMap<Integer, Soldat>();
 	HashMap<Integer,Obstacle> listeObstacle = new HashMap<Integer,Obstacle>();
 	int tabCases[];
+	sauvegarde_wargame gameState;
 	// variable static qui s'incrémente à chaque ajout de soldat dans la hashmap
 	static int indice = 0 ;
 	
@@ -140,8 +141,8 @@ public class FenetreJeu extends JFrame{
 	
 	
 	public void sauvegarderPartie() {
-		sauvegarde_wargame gameState = new sauvegarde_wargame(listeSoldats, listeObstacle, tabCases);
-        JFileChooser folderchooser = new JFileChooser();
+		gameState = new sauvegarde_wargame(listeSoldats, listeObstacle, tabCases);
+        JFileChooser folderchooser = new JFileChooser("src/wargame/sauvegardes");
         int cheminfol = folderchooser.showSaveDialog(null);
         fullpathFolder = folderchooser.getSelectedFile().getAbsolutePath();
         
@@ -157,25 +158,25 @@ public class FenetreJeu extends JFrame{
 	
 	
 	public void chargerPartie() {
-		JFileChooser folderchooser = new JFileChooser();
+		JFileChooser folderchooser = new JFileChooser("src/wargame/sauvegardes");
 		int cheminfol = folderchooser.showSaveDialog(null);
 		fullpathFolder = folderchooser.getSelectedFile().getAbsolutePath();
 
 	    try (FileInputStream fileIn = new FileInputStream(fullpathFolder);
 	         ObjectInputStream in = new ObjectInputStream(fileIn)) {
-	        sauvegarde_wargame gameState = (sauvegarde_wargame) in.readObject();
+	        this.gameState = (sauvegarde_wargame) in.readObject();
 	        
 	        
 	        System.out.println("contenu des tables :: ");
 	        
 	        //verifier le contenue de nos tables
-	        System.out.println("Liste Soldats: " + gameState.getListeSoldats());
-	        System.out.println("Liste Obstacles: " + gameState.getListeObstacle());
-	        System.out.println("Tab Cases: " + Arrays.toString(gameState.getTabCases()));
+	        System.out.println("Liste Soldats: " + this.gameState.getListeSoldats());
+	        System.out.println("Liste Obstacles: " + this.gameState.getListeObstacle());
+	        System.out.println("Tab Cases: " + Arrays.toString(this.gameState.getTabCases()));
 	        
-	        this.listeSoldats = gameState.getListeSoldats();
-	        this.listeObstacle = gameState.getListeObstacle();
-	        this.tabCases = gameState.getTabCases();
+	        this.listeSoldats = this.gameState.getListeSoldats();
+	        this.listeObstacle = this.gameState.getListeObstacle();
+	        this.tabCases = this.gameState.getTabCases();
 	        
 
 	        System.out.println("path de notre fichier " + fullpathFolder);
@@ -217,15 +218,43 @@ public class FenetreJeu extends JFrame{
                 f.setIconImage(imageicon.getImage());
                 f.setLayout(null) ;
                
+               
                 
+                /*____________________// RETOUR AU MENU PRINCIPAL __________________________*/
+                /*                                                                          */
+                /*                                                                          */
+                /*                                                                          */
+                /*                                                                          */
+                /*__________________________________________________________________________*/
                 menu = new JButton(" Menu ");
                 menu.setBounds(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/6,220,100,40);
                 
                 
-                sauvgarder = new JButton(" Sauvegarder la Partie ");
-                sauvgarder.setBounds(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/5,300,170,40);
+                /*______________________ SAUVEGARDER UNE PARTIE ____________________________*/
+                /*                                                                          */
+                /*                                                                          */
+                /*                                                                          */
+                /*                                                                          */
+                /*__________________________________________________________________________*/
+                sauvegarder = new JButton(" Sauvegarder la Partie ");
+                sauvegarder.setBounds(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/5,300,170,40);
+                sauvegarder.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                    	
+                        f.sauvegarderPartie();
+                        System.out.println("Partie sauvegardée !");
+                    }
+                });
                 
                 
+                
+                /*____________________ COMMENCER UNE NOUVELLE PARTIE _______________________*/
+                /*                                                                          */
+                /*                                                                          */
+                /*                                                                          */
+                /*                                                                          */
+                /*__________________________________________________________________________*/
                 //boutton1s à cliquer dans le menu principale
                 JButton buttonNewGame = new JButton("Nouvelle partie");
                 buttonNewGame.setSize(150, 30);
@@ -241,7 +270,7 @@ public class FenetreJeu extends JFrame{
 					public void actionPerformed(ActionEvent e) {
 						f.getContentPane().removeAll(); // Efface tous les panels du menu principale
 						f.add(menu);
-						f.add(sauvgarder);
+						f.add(sauvegarder);
 						f.add(carteJeu); // Ajoute le panel avec la carte de jeu
 						f.repaint();
 						
@@ -253,7 +282,15 @@ public class FenetreJeu extends JFrame{
 					}
                 });
                 
-                JButton continue_partie = new JButton("Continue partie");
+                
+                /*_____________________ CONTINUER UNE PARTIE _______________________________*/
+                /*                                                                          */
+                /*                                                                          */
+                /*                                                                          */
+                /*                                                                          */
+                /*__________________________________________________________________________*/
+                
+                JButton continue_partie = new JButton("Continuer partie");
                 continue_partie.setSize(150, 30);
                 continue_partie.setLocation(IConfig.LARGEUR_FENETRE/2 - IConfig.LARGEUR_FENETRE/13, 400);
                 continue_partie.setHorizontalTextPosition(JButton.CENTER); 
@@ -266,7 +303,7 @@ public class FenetreJeu extends JFrame{
                 		
 						f.getContentPane().removeAll(); // Efface tous les panels du menu principale
 						f.add(menu);
-						f.add(sauvgarder);
+						f.add(sauvegarder);
 						f.add(carteJeu); // Ajoute le panel avec la carte de jeu
 						f.repaint();
 						
@@ -274,8 +311,14 @@ public class FenetreJeu extends JFrame{
 					}
                 });
                 
+                /*_____________________ CHARGER UNE SAUVEGARDE _____________________________*/
+                /*                                                                          */
+                /*                                                                          */
+                /*                                                                          */
+                /*                                                                          */
+                /*__________________________________________________________________________*/
                 
-                JButton parti_sauv = new JButton("partie sauvegarder");
+                JButton parti_sauv = new JButton("Charger partie");
                 parti_sauv.setSize(150, 30);
                 parti_sauv.setLocation(IConfig.LARGEUR_FENETRE/2 - IConfig.LARGEUR_FENETRE/13, 450);
                 parti_sauv.setHorizontalTextPosition(JButton.CENTER); 
@@ -284,10 +327,13 @@ public class FenetreJeu extends JFrame{
                 parti_sauv.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                    	// récuper les données de la sauvegarde
                     	f.chargerPartie() ;
+                    	carteJeu = new PanneauJeu(IConfig.HAUTEUR_CARTE, IConfig.LARGEUR_CARTE, IConfig.NB_PIX_CASE,
+        						f.getTabCases(), f.getListeSoldats() , f.getListeObstacle());
                     	f.getContentPane().removeAll(); // Efface tous les panels du menu principale
 						f.add(menu);
-						f.add(sauvgarder);
+						f.add(sauvegarder);
 						f.add(carteJeu); // Ajoute le panel avec la carte de jeu
 						f.repaint();
                         System.out.println("Lets finish this partie !");
@@ -308,8 +354,7 @@ public class FenetreJeu extends JFrame{
                 panelCouverture.add(buttonNewGame);
                 panelCouverture.add(continue_partie);
                 panelCouverture.add(parti_sauv);
-                
-
+                              
                 // Ajout des composantes a la fenetre
                 f.add(panelCouverture);
                 
@@ -325,14 +370,8 @@ public class FenetreJeu extends JFrame{
         				System.out.println("Retour menu principal !");
         			}
                 });
-                sauvgarder.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                    	
-                        f.sauvegarderPartie();
-                        System.out.println("Partie sauvegardée !");
-                    }
-                });
+                
+                
             }
         };
         //GUI must start on EventDispatchThread:
