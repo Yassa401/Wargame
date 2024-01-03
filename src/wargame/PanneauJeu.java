@@ -80,10 +80,10 @@ public class PanneauJeu extends JPanel{
         this.setBounds(0, 0, (int)(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/4.5) , IConfig.LONGUEUR_FENETRE );
         
         statusLabel = new JLabel(" ");
-	    statusLabel.setBounds(200, IConfig.LONGUEUR_FENETRE - IConfig.LONGUEUR_FENETRE/14,  400, 35);
+	    statusLabel.setBounds(200, (int)(IConfig.LONGUEUR_FENETRE - IConfig.LONGUEUR_FENETRE/15.5),  400, 35);
 	    statusLabel.setFont(new Font("Tahoma", Font.BOLD, 15));
 	    statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	    statusLabel.setForeground(Color.BLACK);
+	    statusLabel.setForeground(Color.WHITE);
         statusLabel.setText("status Heros");
         
 
@@ -183,7 +183,7 @@ public class PanneauJeu extends JPanel{
         g2d.setColor(Color.black);
         g2d.setStroke(bs1);
         PanneauJeu.number = -1;
-        setBackground(IConfig.COULEUR_VIDE);
+        setBackground(new Color(49, 74, 51));
         // Dessine arriere plan
         g2d.drawImage(imageMap, 0, 0, 
         		IConfig.LARGEUR_FENETRE-IConfig.LARGEUR_FENETRE/4 + IConfig.NB_PIX_CASE, IConfig.LONGUEUR_FENETRE-IConfig.LONGUEUR_FENETRE/14,
