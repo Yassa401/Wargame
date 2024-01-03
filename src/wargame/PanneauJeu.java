@@ -126,26 +126,48 @@ public class PanneauJeu extends JPanel{
             @Override
             public void mouseReleased(final MouseEvent e) {
             	mousePosition.setPosition(e.getPoint());
-            	if(soldat != null)  {
-            		// si soldat deplace alors on remplie la nouvelle position dans tableCases avec la cle soldat
-            		if(carte.actionHeros(pos, posSoldat, soldat)) { // si deplacement possible ou attaque effectue
-            			System.out.println("nouvelle position soldat " + soldat.getPosition().getNumeroCase());		
-            		}	
+            	boolean valideM = false;
+            	boolean valideH = false;
+
+            	for (int i = 0 ;i<listeSoldats.size(); i++) {
+            		if(listeSoldats.get(i) instanceof Monstre) {
+            			valideM = true;
+            		}
+            		else if(listeSoldats.get(i) instanceof Heros) {
+            			valideH = true;
+            		}
             	}
-            	soldat = null ; pos = null ; posSoldat = null ;
-            	PanneauJeu.soldat = null ; PanneauJeu.posSoldat = null ;
-            	repaint();
-        		
-            	carte.actionMonstre();
             	
-    			// separe le tour du Heros et le tour de monstre pour voir les deux affichages separement (probleme : repaint() n'est execute qu'à la fin
-            	/*try { 
-    			    Thread.sleep(3000); // arret pour 2 secondes
-    			} catch (InterruptedException exp) {
-    			    // Handle the exception
-    				exp.getStackTrace();
-    			}*/
-            	repaint();
+            	if (valideM && valideH) {
+            		if(soldat != null)  {
+                		// si soldat deplace alors on remplie la nouvelle position dans tableCases avec la cle soldat
+                		if(carte.actionHeros(pos, posSoldat, soldat)) { // si deplacement possible ou attaque effectue
+                			System.out.println("nouvelle position soldat " + soldat.getPosition().getNumeroCase());			
+                		}
+                	}
+                	soldat = null ; pos = null ; posSoldat = null ;
+                	PanneauJeu.soldat = null ; PanneauJeu.posSoldat = null ;
+                	repaint();
+                	
+                	carte.actionMonstre();
+                	
+        			// separe le tour du Heros et le tour de monstre pour voir les deux affichages separement (probleme : repaint() n'est execute qu'à la fin
+                	/*try { 
+        			    Thread.sleep(3000); // arret pour 2 secondes
+        			} catch (InterruptedException exp) {
+        			    // Handle the exception
+        				exp.getStackTrace();
+        			}*/
+                	repaint();
+            	}
+            	
+            	else if (valideM && !valideH) {
+					JOptionPane.showMessageDialog(null,"Bravoo les MONSTRES!");
+            	}
+            	else if (valideH && !valideM) {
+					JOptionPane.showMessageDialog(null,"Bravoo les HEROS!");
+            	}
+
             }
         };
         addMouseMotionListener(mouseHandler);
