@@ -3,12 +3,18 @@ package wargame;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 
 import java.util.Arrays;
@@ -35,6 +41,23 @@ public class FenetreJeu extends JFrame{
 	 * @brief Constructeur qui fait appel a la classe mere JFrame
 	 * @param nom  le nom de la fenetre qu'on va creer
 	 */
+	
+	public static void playMusic(String filePath) {
+	    try {
+	        File musicPath = new File(filePath);
+	        if(musicPath.exists()) {
+	            AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+	            Clip clip = AudioSystem.getClip();
+	            clip.open(audioInput);
+	            clip.start();
+	        } else {
+	            System.out.println("Can't find audio file");
+	        }
+	    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	FenetreJeu(String nom){
 		super(nom) ;
 		// Initialise un nouveau tableau avec le nombre de cases defini dans l'interface IConfig
@@ -184,7 +207,6 @@ public class FenetreJeu extends JFrame{
 	        e.printStackTrace();
 	    }
 	}
-	
 	/*______________________________ PROGRAMME PRINCIPALE ___________________________________ */
 	
 	/**
@@ -284,7 +306,8 @@ public class FenetreJeu extends JFrame{
 						f.nouvellePartie();
 						
 						System.out.println("Nouvelle partie !");
-						
+					    playMusic("src/songs/wav_sample.wav");
+					    
 					}
                 });
                 
