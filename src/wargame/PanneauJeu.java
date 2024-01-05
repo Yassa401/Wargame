@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -81,10 +80,10 @@ public class PanneauJeu extends JPanel{
         this.setBounds(0, 0, (int)(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/4.5) , IConfig.LONGUEUR_FENETRE );
         
         statusLabel = new JLabel(" ");
-	    statusLabel.setBounds(200, IConfig.LONGUEUR_FENETRE - IConfig.LONGUEUR_FENETRE/14,  400, 35);
+	    statusLabel.setBounds(200, (int)(IConfig.LONGUEUR_FENETRE - IConfig.LONGUEUR_FENETRE/15.5),  400, 35);
 	    statusLabel.setFont(new Font("Tahoma", Font.BOLD, 15));
 	    statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	    statusLabel.setForeground(Color.BLACK);
+	    statusLabel.setForeground(Color.WHITE);
         statusLabel.setText("status Heros");
         
 
@@ -127,26 +126,48 @@ public class PanneauJeu extends JPanel{
             @Override
             public void mouseReleased(final MouseEvent e) {
             	mousePosition.setPosition(e.getPoint());
-            	if(soldat != null)  {
-            		// si soldat deplace alors on remplie la nouvelle position dans tableCases avec la cle soldat
-            		if(carte.actionHeros(pos, posSoldat, soldat)) { // si deplacement possible ou attaque effectue
-            			System.out.println("nouvelle position soldat " + soldat.getPosition().getNumeroCase());		
-            		}	
+            	boolean valideM = false;
+            	boolean valideH = false;
+
+            	for (int i = 0 ;i<listeSoldats.size(); i++) {
+            		if(listeSoldats.get(i) instanceof Monstre) {
+            			valideM = true;
+            		}
+            		else if(listeSoldats.get(i) instanceof Heros) {
+            			valideH = true;
+            		}
             	}
-            	soldat = null ; pos = null ; posSoldat = null ;
-            	PanneauJeu.soldat = null ; PanneauJeu.posSoldat = null ;
-            	repaint();
-        		
-            	carte.actionMonstre();
             	
-    			// separe le tour du Heros et le tour de monstre pour voir les deux affichages separement (probleme : repaint() n'est execute qu'à la fin
-            	/*try { 
-    			    Thread.sleep(3000); // arret pour 2 secondes
-    			} catch (InterruptedException exp) {
-    			    // Handle the exception
-    				exp.getStackTrace();
-    			}*/
-            	repaint();
+            	if (valideM && valideH) {
+            		if(soldat != null)  {
+                		// si soldat deplace alors on remplie la nouvelle position dans tableCases avec la cle soldat
+                		if(carte.actionHeros(pos, posSoldat, soldat)) { // si deplacement possible ou attaque effectue
+                			System.out.println("nouvelle position soldat " + soldat.getPosition().getNumeroCase());			
+                		}
+                	}
+                	soldat = null ; pos = null ; posSoldat = null ;
+                	PanneauJeu.soldat = null ; PanneauJeu.posSoldat = null ;
+                	repaint();
+                	
+                	carte.actionMonstre();
+                	
+        			// separe le tour du Heros et le tour de monstre pour voir les deux affichages separement (probleme : repaint() n'est execute qu'à la fin
+                	/*try { 
+        			    Thread.sleep(3000); // arret pour 2 secondes
+        			} catch (InterruptedException exp) {
+        			    // Handle the exception
+        				exp.getStackTrace();
+        			}*/
+                	repaint();
+            	}
+            	
+            	else if (valideM && !valideH) {
+					JOptionPane.showMessageDialog(null,"Bravoo les MONSTRES!");
+            	}
+            	else if (valideH && !valideM) {
+					JOptionPane.showMessageDialog(null,"Bravoo les HEROS!");
+            	}
+
             }
         };
         addMouseMotionListener(mouseHandler);
@@ -162,7 +183,7 @@ public class PanneauJeu extends JPanel{
         g2d.setColor(Color.black);
         g2d.setStroke(bs1);
         PanneauJeu.number = -1;
-        setBackground(IConfig.COULEUR_VIDE);
+        setBackground(new Color(49, 74, 51));
         // Dessine arriere plan
         g2d.drawImage(imageMap, 0, 0, 
         		IConfig.LARGEUR_FENETRE-IConfig.LARGEUR_FENETRE/4 + IConfig.NB_PIX_CASE, IConfig.LONGUEUR_FENETRE-IConfig.LONGUEUR_FENETRE/14,
@@ -201,7 +222,6 @@ public class PanneauJeu extends JPanel{
         //si Soldat selectionné, dessine les cases à sa portée
         if(PanneauJeu.soldat != null) {
         	paintPortee(g2d, PanneauJeu.posSoldat, PanneauJeu.soldat);
-        	paintPorteeProche(g2d, PanneauJeu.posSoldat, PanneauJeu.soldat);
         }
         
         if (PanneauJeu.number != -1) {
@@ -319,7 +339,6 @@ public class PanneauJeu extends JPanel{
     	
     	g2d.setColor(Color.cyan);
         g2d.setStroke(bs3);
-
         
     	if(row%2 == 1 ) {
     		x = column * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
@@ -505,85 +524,4 @@ public class PanneauJeu extends JPanel{
     	}
     }
     
-    public void paintPorteeProche(final Graphics2D g2d, Position pos, Soldat soldat) {
-    	int row = pos.getRow(), column = pos.getColumn();
-    	int x, y;
-    	Polygon focusedHexagon;
-    	
-    	g2d.setColor(Color.orange);
-        g2d.setStroke(bs3);
-        
-        if(row%2 == 1) {
-        
-        	x = column * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
-        	y = (int) (row * side * 1.5 + 0.5);
-        	// droite
-        	x = (column+1) * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
-        	focusedHexagon = getHexagon(x,y);
-        	g2d.draw(focusedHexagon);
-        	// gauche
-        	x = (column-1) * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
-        	focusedHexagon = getHexagon(x,y);
-        	g2d.draw(focusedHexagon);
-        	
-			// bas
-        	x = column * PanneauJeu.dimension.width;
-        	if(row+1 != IConfig.HAUTEUR_CARTE) {
-        		y = (int) ((row+1) * side * 1.5);
-        		focusedHexagon = getHexagon(x,y);
-        		g2d.draw(focusedHexagon);
-        		x = (column+1) * PanneauJeu.dimension.width;
-        		focusedHexagon = getHexagon(x,y);
-        		g2d.draw(focusedHexagon);
-        	}
-        	
-        	// haut
-        	x = column * PanneauJeu.dimension.width;
-        	if(row-1 != 0) {
-        		y = (int) ((row-1) * side * 1.5);
-				focusedHexagon = getHexagon(x,y);
-        		g2d.draw(focusedHexagon);
-        		x = (column+1) * PanneauJeu.dimension.width;
-        		focusedHexagon = getHexagon(x,y);
-        		g2d.draw(focusedHexagon);
-        	}
-        	
-
-        }
-        else if(row%2 == 0) {
-        	x = column * PanneauJeu.dimension.width;
-            y = (int) (row * side * 1.5);
-            
-            // droite
-            x = (column+1) * PanneauJeu.dimension.width;
-            focusedHexagon = getHexagon(x,y);
-            g2d.draw(focusedHexagon);
-            // gauche
-            x = (column-1) * PanneauJeu.dimension.width;
-            focusedHexagon = getHexagon(x,y);
-            g2d.draw(focusedHexagon);
-            
-            // bas
-            x = column * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
-            if(row+1 != IConfig.HAUTEUR_CARTE) {
-            	y = (int) ((row+1) * side * 1.5 + 0.5);
-         		focusedHexagon = getHexagon(x,y);
-         		g2d.draw(focusedHexagon);
-            	x = (column-1) * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
-            	focusedHexagon = getHexagon(x,y);
-            	g2d.draw(focusedHexagon);
-            }
-            
-             // haut
-            x = column * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
-            if(row-1 != 0) {
-            	y = (int) ((row-1) * side * 1.5 + 0.5);
-            	focusedHexagon = getHexagon(x,y);
-            	g2d.draw(focusedHexagon);
-            	x = (column-1) * PanneauJeu.dimension.width + PanneauJeu.dimension.width / 2;
-            	focusedHexagon = getHexagon(x,y);
-            	g2d.draw(focusedHexagon);     	
-            }
-        }
-    }
 }

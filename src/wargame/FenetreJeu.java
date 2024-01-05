@@ -197,7 +197,7 @@ public class FenetreJeu extends JFrame{
 		Runnable gui = new Runnable() {
             public void run() {
             	// Logo de la fenetre et debut du jeu
-                ImageIcon imageicon = new ImageIcon("src/wargame/images/wargame2.jpg") ;
+                ImageIcon imageicon = new ImageIcon("src/wargame/images/backwargame.jpg") ;
                 Image image = imageicon.getImage();
                 
                 
@@ -228,6 +228,8 @@ public class FenetreJeu extends JFrame{
                 /*__________________________________________________________________________*/
                 menu = new JButton(" Menu ");
                 menu.setBounds(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/6,220,100,40);
+                menu.setBackground(new Color(49, 74, 51));
+                menu.setForeground(Color.WHITE);
                 
                 
                 /*______________________ SAUVEGARDER UNE PARTIE ____________________________*/
@@ -238,6 +240,8 @@ public class FenetreJeu extends JFrame{
                 /*__________________________________________________________________________*/
                 sauvegarder = new JButton(" Sauvegarder la Partie ");
                 sauvegarder.setBounds(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/5,300,170,40);
+                sauvegarder.setBackground(new Color(49, 74, 51));
+                sauvegarder.setForeground(Color.WHITE);
                 sauvegarder.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -263,6 +267,8 @@ public class FenetreJeu extends JFrame{
                 buttonNewGame.setHorizontalTextPosition(JButton.CENTER); 
                 buttonNewGame.setVerticalTextPosition(JButton.CENTER);
                 buttonNewGame.setFocusable(false);
+                buttonNewGame.setBackground(new Color(49, 74, 51));
+                buttonNewGame.setForeground(Color.WHITE);
                 //pour effectuer une action si on clique sur le button
                 buttonNewGame.addActionListener(new ActionListener(){
 					// On ajoute le panneau de jeu sur lequel on va jouer
@@ -296,6 +302,8 @@ public class FenetreJeu extends JFrame{
                 continue_partie.setHorizontalTextPosition(JButton.CENTER); 
                 continue_partie.setVerticalTextPosition(JButton.CENTER);
                 continue_partie.setFocusable(false);
+                continue_partie.setBackground(new Color(49, 74, 51));
+                continue_partie.setForeground(Color.WHITE);
                 continue_partie.addActionListener(new ActionListener(){
 					// On ajoute le panneau de jeu sur lequel on va jouer
                 	@Override
@@ -324,6 +332,8 @@ public class FenetreJeu extends JFrame{
                 parti_sauv.setHorizontalTextPosition(JButton.CENTER); 
                 parti_sauv.setVerticalTextPosition(JButton.CENTER);
                 parti_sauv.setFocusable(false);
+                parti_sauv.setBackground(new Color(49, 74, 51));
+                parti_sauv.setForeground(Color.WHITE);
                 parti_sauv.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -348,7 +358,7 @@ public class FenetreJeu extends JFrame{
                 		g.drawImage(image, 0, 0, IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE, null);
                 	}
                 };
-                panelCouverture.setBackground(IConfig.COULEUR_VIDE);
+                panelCouverture.setBackground(new Color(49, 74, 51));
                 panelCouverture.setBounds(0, 0, IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE);
                 panelCouverture.setLayout(null);
                 panelCouverture.add(buttonNewGame);

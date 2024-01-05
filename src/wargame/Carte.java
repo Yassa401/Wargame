@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import javax.swing.JOptionPane;
+
 public class Carte implements ICarte {
 	HashMap<Integer, Soldat> listeSoldats;
     HashMap<Integer, Obstacle> listeObstacle;
@@ -194,29 +196,45 @@ public class Carte implements ICarte {
 		int numCaseSoldatAdverse = posSoldatAdverse.getNumeroCase();
 		
 		// Attaque proche
-		if(numCaseSoldatAdverse == (numCaseSoldat+1)) {soldat.combat(soldatAdverse);} // à droite
-		else if(numCaseSoldatAdverse == (numCaseSoldat-1)) {soldat.combat(soldatAdverse);} // à gauche
-		else if(numCaseSoldatAdverse == (numCaseSoldat+IConfig.LARGEUR_CARTE)) {soldat.combat(soldatAdverse);} // en haut
-		else if(numCaseSoldatAdverse == (numCaseSoldat-1+IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==0) {soldat.combat(soldatAdverse);} // en haut
-		else if(numCaseSoldatAdverse == (numCaseSoldat+1+IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==1) {soldat.combat(soldatAdverse);} // en haut
-		else if(numCaseSoldatAdverse == (numCaseSoldat-IConfig.LARGEUR_CARTE)) {soldat.combat(soldatAdverse);} // en bas
-		else if(numCaseSoldatAdverse == (numCaseSoldat-1-IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==0) {soldat.combat(soldatAdverse);} // en bas 
-		else if(numCaseSoldatAdverse == (numCaseSoldat+1-IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==1) {soldat.combat(soldatAdverse);} // en bas
+		if(numCaseSoldatAdverse == (numCaseSoldat+1)) 
+		{soldat.combat(soldatAdverse);} // à droite
+		else if(numCaseSoldatAdverse == (numCaseSoldat-1)) 
+		{soldat.combat(soldatAdverse);} // à gauche
+		else if(numCaseSoldatAdverse == (numCaseSoldat+IConfig.LARGEUR_CARTE)) 
+		{soldat.combat(soldatAdverse);} // en haut
+		else if(numCaseSoldatAdverse == (numCaseSoldat-1+IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==0) 
+		{soldat.combat(soldatAdverse);} // en haut
+		else if(numCaseSoldatAdverse == (numCaseSoldat+1+IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==1) 
+		{soldat.combat(soldatAdverse);} // en haut
+		else if(numCaseSoldatAdverse == (numCaseSoldat-IConfig.LARGEUR_CARTE)) 
+		{soldat.combat(soldatAdverse);} // en bas
+		else if(numCaseSoldatAdverse == (numCaseSoldat-1-IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==0) 
+		{soldat.combat(soldatAdverse);} // en bas 
+		else if(numCaseSoldatAdverse == (numCaseSoldat+1-IConfig.LARGEUR_CARTE) && posSoldat.getRow()%2==1) 
+		{soldat.combat(soldatAdverse);} // en bas
 		else { // attaque à distance
-			if(numCaseSoldatAdverse <= (numCaseSoldat+soldat.getPortee()) && numCaseSoldatAdverse >= numCaseSoldat-soldat.getPortee()) {
-				soldat.combatDistance(soldatAdverse);
+			for(int i=0 ; i< soldat.getPortee() +1; i++) {
+				if(numCaseSoldatAdverse <= (numCaseSoldat + IConfig.LARGEUR_CARTE*i  + soldat.getPortee()+i) && 
+						numCaseSoldatAdverse >= numCaseSoldat + IConfig.LARGEUR_CARTE*i  - soldat.getPortee()-i) {
+					soldat.combatDistance(soldatAdverse);
+					break;
+				}
+				else {
+					continue;
+				}
 			}
-			else if(numCaseSoldatAdverse <= (numCaseSoldat+IConfig.LARGEUR_CARTE + soldat.getPortee()) && 
-					numCaseSoldatAdverse >= numCaseSoldat+IConfig.LARGEUR_CARTE -soldat.getPortee()) {
-				soldat.combatDistance(soldatAdverse);
+			for(int i=0 ; i< soldat.getPortee() +1; i++) {
+				if(numCaseSoldatAdverse <= (numCaseSoldat - IConfig.LARGEUR_CARTE*i  + soldat.getPortee()+i) && 
+						numCaseSoldatAdverse >= numCaseSoldat - IConfig.LARGEUR_CARTE*i  - soldat.getPortee()-i) {
+					soldat.combatDistance(soldatAdverse);
+					break;
+				}
+				else {
+					continue;
+				}
 			}
-			else if(numCaseSoldatAdverse <= (numCaseSoldat-IConfig.LARGEUR_CARTE + soldat.getPortee()) && 
-					numCaseSoldatAdverse >= numCaseSoldat-IConfig.LARGEUR_CARTE - soldat.getPortee()) {
-				soldat.combatDistance(soldatAdverse);
-			}
-			else { // attaque impossible
-				return false ;
-			}
+			
+			return false ;
 		}
 		return true;
 	}
@@ -274,7 +292,8 @@ public class Carte implements ICarte {
 				pos.setNumeroCase(posSoldat.getNumeroCase()); // revient à la position initiale apres attaque
 				return true; // attaque effectuee donc tour joué
 			}
-		}
+		}           
+		
 		return false; // pas deplacement ni attaque (tour n'est pas encore joué)
 		
 	}
