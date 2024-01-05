@@ -2,8 +2,9 @@ package wargame;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 
-public class Obstacle {
+public class Obstacle implements Serializable{
 
 	public enum TypeObstacle {
 		ROCHER (IConfig.COULEUR_ROCHER), FORET (IConfig.COULEUR_FORET), EAU (IConfig.COULEUR_EAU);

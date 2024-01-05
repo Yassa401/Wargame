@@ -17,7 +17,7 @@ public interface IConfig {
 	// Dimensions de la fenetre
 	static final int LARGEUR_FENETRE = 1000, LONGUEUR_FENETRE = 700 ;
 	
-	int NB_HEROS = 6; int NB_MONSTRES = 15; int NB_OBSTACLES = 20;
+	int NB_HEROS = 6; int NB_MONSTRES = 15; int NB_OBSTACLES = 7;
 	
 	Color COULEUR_VIDE = Color.white, COULEUR_INCONNU = Color.lightGray;
 	
