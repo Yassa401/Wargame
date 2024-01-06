@@ -133,6 +133,7 @@ public class FenetreJeu extends JFrame{
 		Soldat h;
 		Obstacle o;
 		FenetreJeu.indice = 0;
+		PanneauJeu.tour = 0 ;
 		
 		// Efface les soldats et obstacles de la partie précédente
 		this.removeSoldats();
@@ -186,6 +187,8 @@ public class FenetreJeu extends JFrame{
 	
 	
 	public void chargerPartie() {
+		PanneauJeu.tour = 0 ;
+		
 		JFileChooser folderchooser = new JFileChooser("src/wargame/sauvegardes");
 		int cheminfol = folderchooser.showSaveDialog(null);
 		fullpathFolder = folderchooser.getSelectedFile().getAbsolutePath();
@@ -308,8 +311,8 @@ public class FenetreJeu extends JFrame{
 						
 						// Initialise les soldats et obstacles
 						f.nouvellePartie();
-						
 						System.out.println("Nouvelle partie !");
+						
 					    playMusic("src/songs/deroulementPartie.wav");
 					    
 					}

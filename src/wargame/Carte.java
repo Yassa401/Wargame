@@ -285,7 +285,7 @@ public class Carte implements ICarte {
 				
 				System.out.println("Points de vie du monstre après l'attaque est " + monstre.getPoints());
 				if(mort(monstre)) { /* points de vie inferieure à 0*/
-					getListeSoldats().remove(tabCases[pos.getNumeroCase()]); // supprime le monstre du HashMap 
+					getListeSoldats().remove(tabCases[pos.getNumeroCase()]); // supprime le monstre du HashMap
 					getTabCases()[pos.getNumeroCase()] = -1 ; // vide la case dans la carte
 					System.out.println("le monstre est mort") ;
 				}

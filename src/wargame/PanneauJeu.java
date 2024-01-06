@@ -5,6 +5,8 @@ import java.awt.event.*;
 import java.awt.image.*;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map.Entry;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -125,25 +127,19 @@ public class PanneauJeu extends JPanel{
             
             @Override
             public void mouseReleased(final MouseEvent e) {
-            	mousePosition.setPosition(e.getPoint());
-            	boolean valideM = false;
-            	boolean valideH = false;
-
-            	for (int i = 0 ;i<listeSoldats.size(); i++) {
-            		if(listeSoldats.get(i) instanceof Monstre) {
-            			valideM = true;
-            		}
-            		else if(listeSoldats.get(i) instanceof Heros) {
-            			valideH = true;
-            		}
-            	}
+            	mousePosition.setPosition(e.getPoint());            	
             	
-            	if (valideM && valideH) {
-            		if(soldat != null)  {
+            		if(soldat != null && PanneauJeu.tour == 0)  {
                 		// si soldat deplace alors on remplie la nouvelle position dans tableCases avec la cle soldat
                 		if(carte.actionHeros(pos, posSoldat, soldat)) { // si deplacement possible ou attaque effectue
                 			System.out.println("nouvelle position soldat " + soldat.getPosition().getNumeroCase());
-                			PanneauJeu.tour = 1 ; // tour joué
+                			if(MonstreTousMorts()) {
+                        		JOptionPane.showMessageDialog(null,"Bravoo les HEROS!");
+                        		PanneauJeu.tour = -1 ;
+                			}
+                			else {
+                				PanneauJeu.tour = 1 ; // tour joué et monstre(s) encore existant(s)
+                			}
                 		}
                 	}
                 	soldat = null ; pos = null ; posSoldat = null ;
@@ -153,18 +149,20 @@ public class PanneauJeu extends JPanel{
                 	if(PanneauJeu.tour == 1) {
                 		carte.actionMonstre();
                 		PanneauJeu.tour = 0 ;
+                		
+                		if(HerosTousMorts()) {
+                			JOptionPane.showMessageDialog(null,"Bravoo les MONSTRES!");
+                			PanneauJeu.tour = -1 ;
+                		}
+                		else {
+                			PanneauJeu.tour = 0 ; // tour joué et Héro(s) encore existant(s)
+                		}
                 	}
                 	
                 	repaint();
-            	}
             	
-            	else if (valideM && !valideH) {
-					JOptionPane.showMessageDialog(null,"Bravoo les MONSTRES!");
-            	}
-            	else if (valideH && !valideM) {
-					JOptionPane.showMessageDialog(null,"Bravoo les HEROS!");
-            	}
-
+            	
+            		
             }
         };
         addMouseMotionListener(mouseHandler);
@@ -521,4 +519,26 @@ public class PanneauJeu extends JPanel{
     	}
     }
     
+    public boolean HerosTousMorts() {
+    	for (Entry<Integer, Soldat> entry : carte.listeSoldats.entrySet()) {
+    	    Integer key = entry.getKey();
+    	    Soldat value = entry.getValue();
+    	    if(value instanceof Heros) {
+    	    	return false;
+    	    }
+    	}
+    	return true ;
+    }
+    
+    public boolean MonstreTousMorts() {
+    	for (Entry<Integer, Soldat> entry : carte.listeSoldats.entrySet()) {
+    	    Integer key = entry.getKey();
+    	    Soldat value = entry.getValue();
+    	    if(value instanceof Monstre) {
+    	    	return false;
+    	    }
+    	}
+    	return true ;
+    	
+    }
 }
