@@ -217,7 +217,7 @@ public class Carte implements ICarte {
 				if(numCaseSoldatAdverse <= (numCaseSoldat + IConfig.LARGEUR_CARTE*i  + soldat.getPortee()+i) && 
 						numCaseSoldatAdverse >= numCaseSoldat + IConfig.LARGEUR_CARTE*i  - soldat.getPortee()-i) {
 					soldat.combatDistance(soldatAdverse);
-					break;
+					return true;
 				}
 				else {
 					continue;
@@ -227,7 +227,7 @@ public class Carte implements ICarte {
 				if(numCaseSoldatAdverse <= (numCaseSoldat - IConfig.LARGEUR_CARTE*i  + soldat.getPortee()+i) && 
 						numCaseSoldatAdverse >= numCaseSoldat - IConfig.LARGEUR_CARTE*i  - soldat.getPortee()-i) {
 					soldat.combatDistance(soldatAdverse);
-					break;
+					return true ;
 				}
 				else {
 					continue;
