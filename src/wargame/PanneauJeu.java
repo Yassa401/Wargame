@@ -22,9 +22,6 @@ public class PanneauJeu extends JPanel{
     BufferedImage imageRocher,imageEau,imageForet;
     BufferedImage imageMap; // arriere plan de la carte de jeu
     JLabel statusLabel;
-    JButton menu;
-    JButton sauvgarder;
-
 
     Carte carte ;
     

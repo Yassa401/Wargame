@@ -34,6 +34,8 @@ public class FenetreJeu extends JFrame{
 	HashMap<Integer,Obstacle> listeObstacle = new HashMap<Integer,Obstacle>();
 	int tabCases[];
 	sauvegarde_wargame gameState;
+	// variable static qui joue le son du jeu
+	static Clip clip ;
 	// variable static qui s'incrémente à chaque ajout de soldat dans la hashmap
 	static int indice = 0 ;
 	
@@ -43,13 +45,16 @@ public class FenetreJeu extends JFrame{
 	 */
 	
 	public static void playMusic(String filePath) {
+		if(clip != null && clip.isOpen()) {
+			clip.close();
+		}
 	    try {
 	        File musicPath = new File(filePath);
 	        if(musicPath.exists()) {
 	            AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
-	            Clip clip = AudioSystem.getClip();
+	            clip = AudioSystem.getClip();
 	            clip.open(audioInput);
-	            clip.start();
+	            clip.loop(Clip.LOOP_CONTINUOUSLY);
 	        } else {
 	            System.out.println("Can't find audio file");
 	        }
@@ -239,8 +244,7 @@ public class FenetreJeu extends JFrame{
                 
                 f.setIconImage(imageicon.getImage());
                 f.setLayout(null) ;
-               
-               
+                
                 
                 /*____________________// RETOUR AU MENU PRINCIPAL __________________________*/
                 /*                                                                          */
@@ -306,7 +310,7 @@ public class FenetreJeu extends JFrame{
 						f.nouvellePartie();
 						
 						System.out.println("Nouvelle partie !");
-					    playMusic("src/songs/wav_sample.wav");
+					    playMusic("src/songs/deroulementPartie.wav");
 					    
 					}
                 });
@@ -390,6 +394,7 @@ public class FenetreJeu extends JFrame{
                               
                 // Ajout des composantes a la fenetre
                 f.add(panelCouverture);
+                playMusic("src/songs/debutJeu.wav");
                 
                 menu.addActionListener(new ActionListener(){
         			// On ajoute le panneau de jeu sur lequel on va jouer
@@ -399,6 +404,9 @@ public class FenetreJeu extends JFrame{
 						f.getContentPane().removeAll(); // efface la carte et les boutons menu et sauvegarde
                 		f.repaint();
                 		f.add(panelCouverture); // ajoute les boutons du menu principal
+                		
+        			    playMusic("src/songs/debutJeu.wav");
+
                 		
         				System.out.println("Retour menu principal !");
         			}
