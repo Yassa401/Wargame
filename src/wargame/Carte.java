@@ -353,7 +353,6 @@ public class Carte implements ICarte {
 	@Override
 	public void toutDessiner(Graphics g) {
 		// TODO Auto-generated method stub
-		
 	}
 
 }

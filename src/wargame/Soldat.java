@@ -4,8 +4,9 @@ import java.io.Serializable;
 
 abstract class Soldat implements ISoldat,Serializable {
 	 private int pointsDeVie;
-	    private int tour;
 	    private int portee;
+	    private int tir;
+	    private int puissance;
 	    private Position position;
 	    protected TypesM monstre;
 	    protected TypesH heros;
@@ -17,7 +18,8 @@ abstract class Soldat implements ISoldat,Serializable {
 	    Soldat(TypesM typeMonstre){
 	    	this.monstre= typeMonstre;
 	    	this.pointsDeVie = typeMonstre.getPoints();
-	    	this.tour = 0;
+	    	this.tir=typeMonstre.getTir();
+	    	this.puissance=typeMonstre.getPuissance();
 	    	this.portee = typeMonstre.getPortee();
 	    	this.position = new Position(PanneauJeu.dimension);
 	    }
@@ -29,7 +31,8 @@ abstract class Soldat implements ISoldat,Serializable {
 	    Soldat(TypesH typeHeros){
 	    	this.heros = typeHeros;
 	    	this.pointsDeVie = typeHeros.getPoints();
-	    	this.tour = 0;
+	    	this.tir=typeHeros.getTir();
+	    	this.puissance=typeHeros.getPuissance();
 	    	this.portee = typeHeros.getPortee();
 	    	this.position = new Position(PanneauJeu.dimension);
 	    }
@@ -42,17 +45,18 @@ abstract class Soldat implements ISoldat,Serializable {
 	        return pointsDeVie;
 	    }
 
-	    
-	    public int getTour() {
-	        return tour;
-	    }
-
 	    /**
 	     * Renvoie la portee du soldat
 	     * @return portee : portee du soldat
 	     */
+	    public int getTir() {
+	        return tir;
+	    }
 	    public int getPortee() {
 	        return portee;
+	    }
+	    public int getPuissance() {
+	        return puissance;
 	    }
 	    
 	    
@@ -85,10 +89,6 @@ abstract class Soldat implements ISoldat,Serializable {
 	     */
 	    protected abstract TypesH getTypeHeros();
 	    
-	    @Override
-	    public void joueTour(int tour) {
-	        this.tour = tour;
-	    }
 
 	    /**
 	     * Deplace le soldat choisie à la position de la souris en Drag&Drop
