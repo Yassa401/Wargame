@@ -32,6 +32,7 @@ public class PanneauJeu extends JPanel{
     static Dimension dimension;
     static Position posSoldat = null;
 	static Soldat soldat = null ;
+	static int tour = 0 ; // tour heros = 0 , tour monstre = 1
     
     /**
      * Construit un Panel avec les PanneauJeu.dimensions spécifiées et remplie la carte avec les soldats donnés en paramètre
@@ -102,8 +103,10 @@ public class PanneauJeu extends JPanel{
             	if (PanneauJeu.number != -1) {
                     System.out.println("Hexagon " + (PanneauJeu.number));
 	                	pos = new Position(); pos.setPosition(e.getPoint());
-	                	soldat = carte.trouveHeros(pos); 
-	                    statusLabel.setText(" Point : " + listeSoldats.get(tabCases[PanneauJeu.number]).getPoints() + ", Portee : " +listeSoldats.get(tabCases[PanneauJeu.number]).getPortee()+", Tour : "+listeSoldats.get(tabCases[PanneauJeu.number]).getTour());
+	                	soldat = carte.trouveHeros(pos);
+	                	if(listeSoldats.get(tabCases[PanneauJeu.number]) != null) {
+	                		statusLabel.setText(" Point : " + listeSoldats.get(tabCases[PanneauJeu.number]).getPoints() + ", Portee : " +listeSoldats.get(tabCases[PanneauJeu.number]).getPortee()+", Tour : "+listeSoldats.get(tabCases[PanneauJeu.number]).getTour());
+            			}
 	                	if( soldat != null) { // heros trouvé à la position du clique de la souris                 		
 	                		posSoldat = soldat.getPosition();
 	                		PanneauJeu.soldat = soldat;
@@ -139,22 +142,19 @@ public class PanneauJeu extends JPanel{
             		if(soldat != null)  {
                 		// si soldat deplace alors on remplie la nouvelle position dans tableCases avec la cle soldat
                 		if(carte.actionHeros(pos, posSoldat, soldat)) { // si deplacement possible ou attaque effectue
-                			System.out.println("nouvelle position soldat " + soldat.getPosition().getNumeroCase());			
+                			System.out.println("nouvelle position soldat " + soldat.getPosition().getNumeroCase());
+                			PanneauJeu.tour = 1 ; // tour joué
                 		}
                 	}
                 	soldat = null ; pos = null ; posSoldat = null ;
                 	PanneauJeu.soldat = null ; PanneauJeu.posSoldat = null ;
                 	repaint();
                 	
-                	carte.actionMonstre();
+                	if(PanneauJeu.tour == 1) {
+                		carte.actionMonstre();
+                		PanneauJeu.tour = 0 ;
+                	}
                 	
-        			// separe le tour du Heros et le tour de monstre pour voir les deux affichages separement (probleme : repaint() n'est execute qu'à la fin
-                	/*try { 
-        			    Thread.sleep(3000); // arret pour 2 secondes
-        			} catch (InterruptedException exp) {
-        			    // Handle the exception
-        				exp.getStackTrace();
-        			}*/
                 	repaint();
             	}
             	
