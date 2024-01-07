@@ -108,7 +108,6 @@ public class PanneauJeu extends JPanel{
             			System.out.println("clic droit");
 	                	if(listeSoldats.get(tabCases[PanneauJeu.number]) != null) {
 	                		statusLabel.setText(" Point : " + listeSoldats.get(tabCases[PanneauJeu.number]).getPoints() + ", Portee : " +listeSoldats.get(tabCases[PanneauJeu.number]).getPortee()+", Tir : "+listeSoldats.get(tabCases[PanneauJeu.number]).getTir()+", puissance : "+listeSoldats.get(tabCases[PanneauJeu.number]).getPuissance());
-	                		
 	                	}
             		}
             		else {

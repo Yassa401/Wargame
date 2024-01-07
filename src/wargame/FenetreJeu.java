@@ -260,6 +260,11 @@ public class FenetreJeu extends JFrame{
                 menu.setBackground(new Color(49, 74, 51));
                 menu.setForeground(Color.WHITE);
                 
+                Carte.action_Monstre.setBounds((int)(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/5.5),480,170,40);
+                Carte.action_Monstre.setForeground(new Color(49, 74, 51));
+                Carte.action_Monstre.setFont(new Font("Tahoma", Font.BOLD, 15));
+                Carte.action_Monstre.setText(" Action Monstres ");
+
                 
                 /*______________________ SAUVEGARDER UNE PARTIE ____________________________*/
                 /*                                                                          */
@@ -278,9 +283,7 @@ public class FenetreJeu extends JFrame{
                         f.sauvegarderPartie();
                         System.out.println("Partie sauvegardée !");
                     }
-                });
-                
-                
+                });                
                 
                 /*____________________ COMMENCER UNE NOUVELLE PARTIE _______________________*/
                 /*                                                                          */
@@ -307,6 +310,7 @@ public class FenetreJeu extends JFrame{
 						f.add(menu);
 						f.add(sauvegarder);
 						f.add(carteJeu); // Ajoute le panel avec la carte de jeu
+						f.add(Carte.action_Monstre,BorderLayout.CENTER);
 						f.repaint();
 						
 						// Initialise les soldats et obstacles
@@ -343,6 +347,7 @@ public class FenetreJeu extends JFrame{
 						f.add(menu);
 						f.add(sauvegarder);
 						f.add(carteJeu); // Ajoute le panel avec la carte de jeu
+						f.add(Carte.action_Monstre,BorderLayout.CENTER);
 						f.repaint();
 						
 						System.out.println("Continue la partie !");
@@ -375,11 +380,11 @@ public class FenetreJeu extends JFrame{
 						f.add(menu);
 						f.add(sauvegarder);
 						f.add(carteJeu); // Ajoute le panel avec la carte de jeu
+						f.add(Carte.action_Monstre,BorderLayout.CENTER);
 						f.repaint();
                         System.out.println("Lets finish this partie !");
                     }
                 });
-                
                 
                 JPanel panelCouverture = new JPanel() {
                 	@Override 
@@ -394,6 +399,7 @@ public class FenetreJeu extends JFrame{
                 panelCouverture.add(buttonNewGame);
                 panelCouverture.add(continue_partie);
                 panelCouverture.add(parti_sauv);
+
                               
                 // Ajout des composantes a la fenetre
                 f.add(panelCouverture);
