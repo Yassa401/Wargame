@@ -103,18 +103,27 @@ public class PanneauJeu extends JPanel{
             public void mousePressed(final MouseEvent e) {
             	mousePosition.setPosition(e.getPoint());
             	if (PanneauJeu.number != -1) {
-                    System.out.println("Hexagon " + (PanneauJeu.number));
+            		System.out.println("Hexagon " + (PanneauJeu.number));
+            		if(SwingUtilities.isRightMouseButton(e)) {
+            			System.out.println("clic droit");
+	                	if(listeSoldats.get(tabCases[PanneauJeu.number]) != null) {
+	                		statusLabel.setText(" Point : " + listeSoldats.get(tabCases[PanneauJeu.number]).getPoints() + ", Portee : " +listeSoldats.get(tabCases[PanneauJeu.number]).getPortee()+", Tir : "+listeSoldats.get(tabCases[PanneauJeu.number]).getTir()+", puissance : "+listeSoldats.get(tabCases[PanneauJeu.number]).getPuissance());
+	                		
+	                	}
+            		}
+            		else {
+            			System.out.println("clic gauche");
 	                	pos = new Position(); pos.setPosition(e.getPoint());
 	                	soldat = carte.trouveHeros(pos);
-	                	if(listeSoldats.get(tabCases[PanneauJeu.number]) != null && SwingUtilities.isLeftMouseButton(e)) {
-	                		statusLabel.setText(" Point : " + listeSoldats.get(tabCases[PanneauJeu.number]).getPoints() + ", Portee : " +listeSoldats.get(tabCases[PanneauJeu.number]).getPortee()+", Tir : "+listeSoldats.get(tabCases[PanneauJeu.number]).getTir()+", puissance : "+listeSoldats.get(tabCases[PanneauJeu.number]).getPuissance());
-            			}
 	                	if( soldat != null) { // heros trouvé à la position du clique de la souris                 		
 	                		posSoldat = soldat.getPosition();
 	                		PanneauJeu.soldat = soldat;
 	                		PanneauJeu.posSoldat = posSoldat;
 	                	}
+            		}
+	                	
                 }
+            	
             }
             @Override
             public void mouseDragged(final MouseEvent e) {
