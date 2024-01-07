@@ -106,7 +106,7 @@ public class PanneauJeu extends JPanel{
                     System.out.println("Hexagon " + (PanneauJeu.number));
 	                	pos = new Position(); pos.setPosition(e.getPoint());
 	                	soldat = carte.trouveHeros(pos);
-	                	if(listeSoldats.get(tabCases[PanneauJeu.number]) != null) {
+	                	if(listeSoldats.get(tabCases[PanneauJeu.number]) != null && SwingUtilities.isLeftMouseButton(e)) {
 	                		statusLabel.setText(" Point : " + listeSoldats.get(tabCases[PanneauJeu.number]).getPoints() + ", Portee : " +listeSoldats.get(tabCases[PanneauJeu.number]).getPortee()+", Tir : "+listeSoldats.get(tabCases[PanneauJeu.number]).getTir()+", puissance : "+listeSoldats.get(tabCases[PanneauJeu.number]).getPuissance());
             			}
 	                	if( soldat != null) { // heros trouvé à la position du clique de la souris                 		

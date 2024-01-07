@@ -258,6 +258,12 @@ public class Carte implements ICarte {
 	public boolean actionHeros(Position pos, Position posSoldat, Soldat soldat) {
 		int cleHeros;
 		
+		if(pos.getNumeroCase() == posSoldat.getNumeroCase() ) { // si clique sur soldat sans déplacement, le soldat doit se reposer
+			if(soldat.getPoints() < soldat.getTypeHeros().getPoints()) { // si points de vie soldat sont au maximum, le soldat ne se repose pas, le tour n'est pas joué 
+				soldat.seReposer();
+				return true ;
+			}
+		}
 		
 		if(estPositionVide(pos)) {
 			// Recupere dans HashMap pour la déplacer

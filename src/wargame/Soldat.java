@@ -111,4 +111,12 @@ abstract class Soldat implements ISoldat,Serializable {
 	    public void combatDistance(Soldat soldat) {
 	    	// On definit cette methode dans Heros et Monstre pour recuperer les puissance
 	    }
+	    
+	    /**
+		 * Ajoute des points de vie lorsqu'on clique sur un heros sans le deplacer
+		 */
+		public void seReposer() {
+			int point = (int)Math.random() * 2 + 1 ;
+			this.setPoints(this.getPoints()+ point);
+		}
 }
