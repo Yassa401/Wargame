@@ -84,7 +84,7 @@ public class PanneauJeu extends JPanel{
 	    statusLabel.setFont(new Font("Tahoma", Font.BOLD, 15));
 	    statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
 	    statusLabel.setForeground(Color.WHITE);
-        statusLabel.setText("status Heros");
+        statusLabel.setText("status Soldat");
         
 
         this.add(statusLabel, BorderLayout.SOUTH);

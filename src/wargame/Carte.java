@@ -324,8 +324,8 @@ public class Carte implements ICarte {
 		heros = trouveHerosAdverse(posMonstre);
 		
 		if(heros != null) { // Attaque effectue si heros se trouve en case adjacente
-			action_Monstre.setText("Monstre : attaque");
-
+			action_Monstre.setText(monstre.getTypeMonstre() + " : attaque " + heros.getTypeHeros());			
+			
 			System.out.println("Heros " + heros.getTypeHeros());
 			//System.out.println("Points de vie du heros avant l'attaque est " + heros.getPoints());
 			monstre.combat(heros);
@@ -337,8 +337,8 @@ public class Carte implements ICarte {
 			}
 		}
 		else { // deplacement sinon
-			action_Monstre.setText("Monstre : se deplace");
-
+			action_Monstre.setText(monstre.getTypeMonstre() + " : se deplace");
+			
 			// Trouve une position vide adjacente
 			pos = trouvePositionVide(posMonstre);
 			// Recupere dans HashMap pour la déplacer

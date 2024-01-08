@@ -15,7 +15,7 @@ public interface IConfig {
 	static final int POSITION_X = 400, POSITION_Y = 200;
 	
 	// Dimensions de la fenetre
-	static final int LARGEUR_FENETRE = 1000, LONGUEUR_FENETRE = 700 ;
+	static final int LARGEUR_FENETRE = 1200, LONGUEUR_FENETRE = 700 ;
 	
 	int NB_HEROS = 6; int NB_MONSTRES = 15; int NB_OBSTACLES = 7;
 	

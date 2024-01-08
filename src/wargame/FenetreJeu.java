@@ -263,8 +263,6 @@ public class FenetreJeu extends JFrame{
                 Carte.action_Monstre.setBounds((int)(IConfig.LARGEUR_FENETRE - IConfig.LARGEUR_FENETRE/5.5),480,170,40);
                 Carte.action_Monstre.setForeground(new Color(49, 74, 51));
                 Carte.action_Monstre.setFont(new Font("Tahoma", Font.BOLD, 15));
-                Carte.action_Monstre.setText(" Action Monstres ");
-
                 
                 /*______________________ SAUVEGARDER UNE PARTIE ____________________________*/
                 /*                                                                          */
@@ -315,6 +313,8 @@ public class FenetreJeu extends JFrame{
 						
 						// Initialise les soldats et obstacles
 						f.nouvellePartie();
+		                
+						Carte.action_Monstre.setText(" Action Monstres ");
 						System.out.println("Nouvelle partie !");
 						
 					    playMusic("src/songs/deroulementPartie.wav");
@@ -350,6 +350,7 @@ public class FenetreJeu extends JFrame{
 						f.add(Carte.action_Monstre,BorderLayout.CENTER);
 						f.repaint();
 						
+		                Carte.action_Monstre.setText(" Action Monstres ");
 						System.out.println("Continue la partie !");
 					}
                 });
@@ -382,6 +383,8 @@ public class FenetreJeu extends JFrame{
 						f.add(carteJeu); // Ajoute le panel avec la carte de jeu
 						f.add(Carte.action_Monstre,BorderLayout.CENTER);
 						f.repaint();
+						
+		                Carte.action_Monstre.setText(" Action Monstres ");
                         System.out.println("Lets finish this partie !");
                     }
                 });
