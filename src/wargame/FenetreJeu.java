@@ -29,7 +29,6 @@ public class FenetreJeu extends JFrame{
 	static PanneauJeu carteJeu;
 	static JButton menu;
 	static JButton sauvegarder;
-	public static JPanel panmenu ;
 	HashMap<Integer, Soldat> listeSoldats = new HashMap<Integer, Soldat>();
 	HashMap<Integer,Obstacle> listeObstacle = new HashMap<Integer,Obstacle>();
 	int tabCases[];
@@ -40,8 +39,8 @@ public class FenetreJeu extends JFrame{
 	static int indice = 0 ;
 	
 	/**
-	 * @brief Constructeur qui fait appel a la classe mere JFrame
-	 * @param nom  le nom de la fenetre qu'on va creer
+	 * Joue le son donné en paramétre
+	 * @param filePath : le chemin contenant le son à exécuter
 	 */
 	
 	public static void playMusic(String filePath) {
@@ -73,14 +72,15 @@ public class FenetreJeu extends JFrame{
 	}
 	
 	/**
-	 * @brief Renvoie le tableau de cases de la carte
+	 * Renvoie le tableau de cases de la carte
+	 * @return renvoie un tableau de type int
 	 */
 	public int[] getTabCases() {
 		return this.tabCases;
 	}
 	
 	/**
-	 * @brief Renvoie HashMap contenant les informations sur les soldats
+	 * Renvoie HashMap contenant les informations sur les soldats
 	 * @return Hashmap de liste de soldats
 	 */
 	public HashMap<Integer, Soldat> getListeSoldats(){
@@ -88,7 +88,7 @@ public class FenetreJeu extends JFrame{
 	}
 	
 	/**
-	 * @brief Renvoie HashMap contenant les informations sur les obstacles
+	 * Renvoie HashMap contenant les informations sur les obstacles
 	 * @return Hashmap de liste d'obstacles
 	 */
 	public HashMap<Integer,Obstacle> getListeObstacle(){
@@ -96,8 +96,8 @@ public class FenetreJeu extends JFrame{
 	}
 	
 	/**
-	 * @brief ajout de soldat dans carte
-	 * @param Soldat : l'objet soldat créé à ajouter
+	 * Ajoute soldat dans carte et dans liste des soldats
+	 * @param soldat : l'objet soldat créé à ajouter
 	 */
 	public void ajoutSoldat(Soldat soldat) {
 		this.listeSoldats.put(FenetreJeu.indice, soldat);
@@ -106,7 +106,7 @@ public class FenetreJeu extends JFrame{
 	}
 	
 	/**
-	 * @brief ajout de obstacle dans carte
+	 * Ajoute de obstacle dans carte
 	 * @param obstacle : l'objet obstacle créé à ajouter
 	 */
 	public void ajoutObstacle(Obstacle obstacle) {
@@ -116,19 +116,23 @@ public class FenetreJeu extends JFrame{
 	}
 	
 	/**
-	 * @brief Efface les soldats de la carte
+	 * Efface tous les soldats de la liste des soldats
 	 */
 	public void removeSoldats() {
 		this.listeSoldats.clear();
 	}
 	
 	/**
-	 * @brief Efface les obstacles de la carte
+	 * Efface tous les obstacles de la liste des obstacles
 	 */
 	public void removeObstacles() {
 		this.listeObstacle.clear();
 	}
 	
+	/**
+	 * Commence une nouvelle partie est initilisant à nouveau : liste des soldats, liste des obstacles
+	 * Place les soldats et les obstacles aléatoirement dans la carte
+	 */
 	public void nouvellePartie() {
 		Soldat h;
 		Obstacle o;
@@ -168,7 +172,10 @@ public class FenetreJeu extends JFrame{
 		
 	}
 	
-	
+	/**
+	 * Ouvre un menu de sauvegarde
+	 * Effectue une sauvegarde d'une partie et la stocke dans un fichier .ser dont l'utilisateur choisit le nom
+	 */
 	public void sauvegarderPartie() {
 		gameState = new sauvegarde_wargame(listeSoldats, listeObstacle, tabCases);
         JFileChooser folderchooser = new JFileChooser("src/wargame/sauvegardes");
@@ -185,7 +192,9 @@ public class FenetreJeu extends JFrame{
         }
     }
 	
-	
+	/**
+	 * Charge une partie à partir d'une sauvegarde choisie dans le menu de sauvegarde ouvert
+	 */
 	public void chargerPartie() {
 		PanneauJeu.tour = 0 ;
 		
@@ -220,7 +229,6 @@ public class FenetreJeu extends JFrame{
 	/**
 	 * methode principale
 	 * @param args - arguments en ligne de commande
-	 * @return
 	 */
 	
 	public static void main(final String[] args) {

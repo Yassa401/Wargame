@@ -47,20 +47,16 @@ public class Carte implements ICarte {
 		return listeObstacle;
 	}
 	
+	/**
+	 * Teste si une position de la carte est vide
+	 * @param pos : la position à tester
+	 * @return true : si position vide, false sinon
+	 */
 	public boolean estPositionVide(Position pos) {
 		if(PanneauJeu.number == -1) {return false;}
 		return tabCases[pos.getNumeroCase()] == -1;
 	}
 	
-	@Override
-	public Position trouvePositionVide() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Trouve une case vide adjacente à la position en paramètre
-	 */
 	@Override
 	public Position trouvePositionVide(Position pos) {
 		int acc = 0 ;
@@ -154,6 +150,11 @@ public class Carte implements ICarte {
 		return null;
 	}
 	
+	/**
+	 * Etant donne un monstre, cherche si un soldat se trouve à sa portée
+	 * @param monstre : le monstre qui va effectuer l'attaque à distance
+	 * @return renvoie un objet Heros s'il existe, null sinon
+	 */
 	public Heros trouveHerosPortee(Soldat monstre) {
 		int numCaseSoldat = monstre.getPosition().getNumeroCase();
 		for(int i=0; i < monstre.getPortee()+1 ; i++) {
@@ -173,12 +174,6 @@ public class Carte implements ICarte {
 		return null ;
 	}
 	
-
-	@Override
-	public Heros trouveHeros() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Heros trouveHeros(Position pos) {
@@ -209,9 +204,6 @@ public class Carte implements ICarte {
 		return true;
 	}
 	
-	/**
-	 * Attaque monstre dans l'une des positions adjacentes si pos contient un monstre
-	 */
 	@Override
 	public boolean combatSoldat(Position posSoldatAdverse, Position posSoldat, Soldat soldat, Soldat soldatAdverse) {
 		int numCaseSoldat = posSoldat.getNumeroCase();
@@ -392,14 +384,6 @@ public class Carte implements ICarte {
 			}
 		}
 		return true;
-	}
-
-	
-	
-	@Override
-	public void jouerSoldats(PanneauJeu pj) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

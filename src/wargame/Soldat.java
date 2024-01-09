@@ -91,7 +91,7 @@ abstract class Soldat implements ISoldat,Serializable {
 	    
 
 	    /**
-	     * Deplace le soldat choisie à la position de la souris en Drag&Drop
+	     * Deplace le soldat choisie à la position de la souris (Drag and Drop)
 	     * @param nouvellePos : la nouvelle position correspondant à celle de la souris
 	     */
 	    @Override
@@ -100,14 +100,18 @@ abstract class Soldat implements ISoldat,Serializable {
 	    }
 
 	    /**
-	     * Attaque le soldat adverse s'il se trouve à la position de la souris
-	     * @param soldat : soldat à attaquer (dans ce case Monstre)
+	     * Attaque corps à corps le soldat adverse s'il se trouve à la position de la souris
+	     * @param soldat : soldat à attaquer (dans ce cas Monstre ou Heros)
 	     */
 	    @Override
 	    public void combat(Soldat soldat) {
 	    	// On definit cette methode dans Heros et Monstre pour recuperer les puissance
 	    }
 	    
+	    /**
+	     * Attaque à distance le soldat adverse
+	     * @param soldat : soldat à attaquer( dans ce cas Monstre ou Heros)
+	     */
 	    public void combatDistance(Soldat soldat) {
 	    	// On definit cette methode dans Heros et Monstre pour recuperer les puissance
 	    }
