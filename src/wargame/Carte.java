@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Random;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 public class Carte implements ICarte {
 	HashMap<Integer, Soldat> listeSoldats;

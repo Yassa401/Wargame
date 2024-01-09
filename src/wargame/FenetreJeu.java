@@ -3,10 +3,11 @@ package wargame;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -24,7 +25,12 @@ import java.util.HashMap;
  * Classe exécutable contenant la fenetre de jeu
  */
 public class FenetreJeu extends JFrame{
-    static String fullpathFolder="";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	static String fullpathFolder="";
 
 	static PanneauJeu carteJeu;
 	static JButton menu;
@@ -42,25 +48,23 @@ public class FenetreJeu extends JFrame{
 	 * Joue le son donné en paramétre
 	 * @param filePath : le chemin contenant le son à exécuter
 	 */
-	
 	public static void playMusic(String filePath) {
-		if(clip != null && clip.isOpen()) {
-			clip.close();
-		}
-	    try {
-	        File musicPath = new File(filePath);
-	        if(musicPath.exists()) {
-	            AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
-	            clip = AudioSystem.getClip();
-	            clip.open(audioInput);
-	            clip.loop(Clip.LOOP_CONTINUOUSLY);
-	        } else {
-	            System.out.println("Can't find audio file");
-	        }
+	    if (clip != null && clip.isOpen()) {
+	        clip.close();
+	    }
+	    try (InputStream audioSrc = FenetreJeu.class.getResourceAsStream(filePath);
+	         BufferedInputStream bufferedIn = new BufferedInputStream(audioSrc)) {
+	        AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
+	        clip = AudioSystem.getClip();
+	        clip.open(audioStream);
+	        clip.loop(Clip.LOOP_CONTINUOUSLY);
 	    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
 	        e.printStackTrace();
 	    }
 	}
+
+
+
 	
 	FenetreJeu(String nom){
 		super(nom) ;
@@ -177,53 +181,68 @@ public class FenetreJeu extends JFrame{
 	 * Effectue une sauvegarde d'une partie et la stocke dans un fichier .ser dont l'utilisateur choisit le nom
 	 */
 	public void sauvegarderPartie() {
-		gameState = new sauvegarde_wargame(listeSoldats, listeObstacle, tabCases);
-        JFileChooser folderchooser = new JFileChooser("src/wargame/sauvegardes");
-        int cheminfol = folderchooser.showSaveDialog(null);
-        fullpathFolder = folderchooser.getSelectedFile().getAbsolutePath();
-        
-        System.out.println("path de notre fichier " +fullpathFolder);
-		
-		try (FileOutputStream fileOut = new FileOutputStream(fullpathFolder);
-             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
-            out.writeObject(gameState);
-        } catch (IOException i) {
-            i.printStackTrace();
-        }
-    }
+	    gameState = new sauvegarde_wargame(listeSoldats, listeObstacle, tabCases);
+	    JFileChooser folderchooser = new JFileChooser(getClass().getResource("/wargame/sauvegardes").getFile());
+	    folderchooser.showSaveDialog(null);
+	    File selectedFile = folderchooser.getSelectedFile();
+	    if (selectedFile != null) {
+	        fullpathFolder = selectedFile.toURI().getPath();
+	    }
+
+	    try (FileOutputStream fileOut = new FileOutputStream(fullpathFolder);
+	         ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+	        out.writeObject(gameState);
+	    } catch (IOException i) {
+	        i.printStackTrace();
+	    }
+	}
+
+
 	
 	/**
 	 * Charge une partie à partir d'une sauvegarde choisie dans le menu de sauvegarde ouvert
 	 */
 	public void chargerPartie() {
-		PanneauJeu.tour = 0 ;
-		
-		JFileChooser folderchooser = new JFileChooser("src/wargame/sauvegardes");
-		int cheminfol = folderchooser.showSaveDialog(null);
-		fullpathFolder = folderchooser.getSelectedFile().getAbsolutePath();
+	    PanneauJeu.tour = 0;
 
-	    try (FileInputStream fileIn = new FileInputStream(fullpathFolder);
-	         ObjectInputStream in = new ObjectInputStream(fileIn)) {
-	        this.gameState = (sauvegarde_wargame) in.readObject();
-	        
-	        
-	        System.out.println("contenu des tables :: ");
-	        
-	        //verifier le contenue de nos tables
-	        System.out.println("Liste Soldats: " + this.gameState.getListeSoldats());
-	        System.out.println("Liste Obstacles: " + this.gameState.getListeObstacle());
-	        System.out.println("Tab Cases: " + Arrays.toString(this.gameState.getTabCases()));
-	        
-	        this.listeSoldats = this.gameState.getListeSoldats();
-	        this.listeObstacle = this.gameState.getListeObstacle();
-	        this.tabCases = this.gameState.getTabCases();
-	        
+	    JFileChooser folderchooser = new JFileChooser(getClass().getResource("/wargame/sauvegardes").getFile());
+	    folderchooser.showSaveDialog(null);
+	    File selectedFile = folderchooser.getSelectedFile();
+	    if (selectedFile != null) {
+	        fullpathFolder = selectedFile.toURI().getPath();
+	    }
 
-	        System.out.println("path de notre fichier " + fullpathFolder);
-	    } catch (IOException | ClassNotFoundException e) {
+	    try (InputStream fileIn = getClass().getResourceAsStream(fullpathFolder)) {
+	        if (fileIn != null) {
+	            try (ObjectInputStream in = new ObjectInputStream(fileIn)) {
+	                this.gameState = (sauvegarde_wargame) in.readObject();
+
+	                System.out.println("contenu des tables :: ");
+
+	                //verifier le contenue de nos tables
+	                System.out.println("Liste Soldats: " + this.gameState.getListeSoldats());
+	                System.out.println("Liste Obstacles: " + this.gameState.getListeObstacle());
+	                System.out.println("Tab Cases: " + Arrays.toString(this.gameState.getTabCases()));
+
+	                this.listeSoldats = this.gameState.getListeSoldats();
+	                this.listeObstacle = this.gameState.getListeObstacle();
+	                this.tabCases = this.gameState.getTabCases();
+
+	                System.out.println("path de notre fichier " + fullpathFolder);
+	            } catch (ClassNotFoundException e) {
+	                e.printStackTrace();
+	            }
+	        } else {
+	            System.out.println("Cannot open file " + fullpathFolder);
+	        }
+	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
 	}
+
+
+
+
 	/*______________________________ PROGRAMME PRINCIPALE ___________________________________ */
 	
 	/**
@@ -235,7 +254,7 @@ public class FenetreJeu extends JFrame{
 		Runnable gui = new Runnable() {
             public void run() {
             	// Logo de la fenetre et debut du jeu
-                ImageIcon imageicon = new ImageIcon("src/wargame/images/backwargame.jpg") ;
+            	ImageIcon imageicon = new ImageIcon(getClass().getResource("/wargame/images/backwargame.jpg"));
                 Image image = imageicon.getImage();
                 
                 
@@ -325,7 +344,7 @@ public class FenetreJeu extends JFrame{
 						Carte.action_Monstre.setText(" Action Monstres ");
 						System.out.println("Nouvelle partie !");
 						
-					    playMusic("src/songs/deroulementPartie.wav");
+					    playMusic("/songs/deroulementPartie.wav");
 					    
 					}
                 });
@@ -360,6 +379,9 @@ public class FenetreJeu extends JFrame{
 						
 		                Carte.action_Monstre.setText(" Action Monstres ");
 						System.out.println("Continue la partie !");
+						
+					    playMusic("/songs/deroulementPartie.wav");
+
 					}
                 });
                 
@@ -398,7 +420,12 @@ public class FenetreJeu extends JFrame{
                 });
                 
                 JPanel panelCouverture = new JPanel() {
-                	@Override 
+                	/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
+
+					@Override 
                 	public void paintComponent(Graphics g){
                 		super.paintComponent(g);
                 		g.drawImage(image, 0, 0, IConfig.LARGEUR_FENETRE, IConfig.LONGUEUR_FENETRE, null);
@@ -414,7 +441,7 @@ public class FenetreJeu extends JFrame{
                               
                 // Ajout des composantes a la fenetre
                 f.add(panelCouverture);
-                playMusic("src/songs/debutJeu.wav");
+                playMusic("/songs/debutJeu.wav");
                 
                 menu.addActionListener(new ActionListener(){
         			// On ajoute le panneau de jeu sur lequel on va jouer
@@ -425,7 +452,7 @@ public class FenetreJeu extends JFrame{
                 		f.repaint();
                 		f.add(panelCouverture); // ajoute les boutons du menu principal
                 		
-        			    playMusic("src/songs/debutJeu.wav");
+        			    playMusic("/songs/debutJeu.wav");
 
                 		
         				System.out.println("Retour menu principal !");

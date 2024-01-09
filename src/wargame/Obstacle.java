@@ -1,16 +1,18 @@
 package wargame;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.io.Serializable;
 
 public class Obstacle implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public enum TypeObstacle {
 		ROCHER (IConfig.COULEUR_ROCHER), FORET (IConfig.COULEUR_FORET), EAU (IConfig.COULEUR_EAU);
 		
-		private final Color COULEUR;
-		TypeObstacle(Color couleur) { COULEUR = couleur; }
+		TypeObstacle(Color couleur) { }
 		
 		public static TypeObstacle getObstacleAlea() {
 		return values()[(int)(Math.random()*values().length)];
@@ -20,7 +22,7 @@ public class Obstacle implements Serializable{
 	private TypeObstacle TYPE;
 	
 	public Obstacle() { 
-		this.TYPE = TYPE.getObstacleAlea(); 
+		this.TYPE = TypeObstacle.getObstacleAlea(); 
         this.position = new Position(PanneauJeu.dimension);
 	}
         

@@ -5,6 +5,10 @@ import java.io.Serializable;
 
 public class Position implements IConfig,Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int x, y;
 	private int number; // numero de la case
 	private int column, row;

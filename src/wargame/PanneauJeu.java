@@ -3,17 +3,20 @@ package wargame;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
-import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.*;
 import javax.swing.event.MouseInputAdapter;
 
 public class PanneauJeu extends JPanel{
-    private final Polygon hexagon = new Polygon();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private final Polygon hexagon = new Polygon();
     private final BasicStroke bs1 = new BasicStroke(1);
     private final BasicStroke bs3 = new BasicStroke(3);
     private final Point focusedHexagonLocation = new Point();
@@ -51,29 +54,72 @@ public class PanneauJeu extends JPanel{
         this.carte = new Carte(tabCases, listeSoldats, listeObstacle);
         
         //charger une image d'un soldat (en cours de test)
-        try { imageHobbit = ImageIO.read(new File("src/wargame/images/hobbit.png"));}
-        catch(Exception e) { System.out.println("Erreur pour charger l'image du hobbit !");}
-        try { imageHumain = ImageIO.read(new File("src/wargame/images/chevalier.png"));}
-        catch(Exception e) { System.out.println("Erreur pour charger l'image du humain !");}
-        try { imageElf = ImageIO.read(new File("src/wargame/images/elf.png"));}
-        catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
-        try { imageNain = ImageIO.read(new File("src/wargame/images/nain.png"));}
-        catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
-        try { imageOrc = ImageIO.read(new File("src/wargame/images/orc.png"));}
-        catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
-        try { imageGobelin = ImageIO.read(new File("src/wargame/images/gobelin.png"));}
-        catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
-        try { imageTroll = ImageIO.read(new File("src/wargame/images/troll.png"));}
-        catch(Exception e) { System.out.println("Erreur pour charger l'image du soldat !");}
-        try { imageEau = ImageIO.read(new File("src/wargame/images/eau.jpg"));}
-        catch(Exception e) { System.out.println("Erreur pour charger l'image du obstacle !");}
-        try { imageRocher = ImageIO.read(new File("src/wargame/images/rocher.png"));}
-        catch(Exception e) { System.out.println("Erreur pour charger l'image du obstacle !");}
-        try { imageForet = ImageIO.read(new File("src/wargame/images/arbre.png"));}
-        catch(Exception e) { System.out.println("Erreur pour charger l'image du obstacle !");}
-        try { imageMap = ImageIO.read(new File("src/wargame/images/mipui2.png"));}
-        catch(Exception e) { System.out.println("Erreur pour charger l'image du obstacle !");}
-        
+        try {
+            imageHobbit = ImageIO.read(getClass().getResource("/wargame/images/hobbit.png"));
+        } catch (IOException e) {
+            System.out.println("Erreur pour charger l'image du hobbit !");
+        }
+
+        try {
+            imageHumain = ImageIO.read(getClass().getResource("/wargame/images/chevalier.png"));
+        } catch (IOException e) {
+            System.out.println("Erreur pour charger l'image du humain !");
+        }
+
+        try {
+            imageElf = ImageIO.read(getClass().getResource("/wargame/images/elf.png"));
+        } catch (IOException e) {
+            System.out.println("Erreur pour charger l'image du soldat !");
+        }
+
+        try {
+            imageNain = ImageIO.read(getClass().getResource("/wargame/images/nain.png"));
+        } catch (IOException e) {
+            System.out.println("Erreur pour charger l'image du soldat !");
+        }
+
+        try {
+            imageOrc = ImageIO.read(getClass().getResource("/wargame/images/orc.png"));
+        } catch (IOException e) {
+            System.out.println("Erreur pour charger l'image du soldat !");
+        }
+
+        try {
+            imageGobelin = ImageIO.read(getClass().getResource("/wargame/images/gobelin.png"));
+        } catch (IOException e) {
+            System.out.println("Erreur pour charger l'image du soldat !");
+        }
+
+        try {
+            imageTroll = ImageIO.read(getClass().getResource("/wargame/images/troll.png"));
+        } catch (IOException e) {
+            System.out.println("Erreur pour charger l'image du soldat !");
+        }
+
+        try {
+            imageEau = ImageIO.read(getClass().getResource("/wargame/images/eau.jpg"));
+        } catch (IOException e) {
+            System.out.println("Erreur pour charger l'image du obstacle !");
+        }
+
+        try {
+            imageRocher = ImageIO.read(getClass().getResource("/wargame/images/rocher.png"));
+        } catch (IOException e) {
+            System.out.println("Erreur pour charger l'image du obstacle !");
+        }
+
+        try {
+            imageForet = ImageIO.read(getClass().getResource("/wargame/images/arbre.png"));
+        } catch (IOException e) {
+            System.out.println("Erreur pour charger l'image du obstacle !");
+        }
+
+        try {
+            imageMap = ImageIO.read(getClass().getResource("/wargame/images/mipui2.png"));
+        } catch (IOException e) {
+            System.out.println("Erreur pour charger l'image du obstacle !");
+        }
+
         setLayout(null);
 
         // On veut que ce panel contenant la carte du jeu couvre toute la fenetre (ou pas ?)
@@ -92,9 +138,7 @@ public class PanneauJeu extends JPanel{
     	MouseInputAdapter mouseHandler = new MouseInputAdapter() {
     		Position pos = null, posSoldat = null;
         	Soldat soldat = null ;
-        	int cleSoldat;
-        	
-            @Override
+        	@Override
             public void mouseMoved(final MouseEvent e) {
                 mousePosition.setPosition(e.getPoint());
                 repaint();
@@ -336,7 +380,6 @@ public class PanneauJeu extends JPanel{
      */
     public void paintPortee(final Graphics2D g2d, Position pos, Soldat soldat) {
     	int row = pos.getRow(), column = pos.getColumn();
-    	int portee = soldat.getPortee();
     	int x = 0, y = 0;
     	Polygon focusedHexagon;
     	
@@ -529,7 +572,6 @@ public class PanneauJeu extends JPanel{
     
     public boolean HerosTousMorts() {
     	for (Entry<Integer, Soldat> entry : carte.listeSoldats.entrySet()) {
-    	    Integer key = entry.getKey();
     	    Soldat value = entry.getValue();
     	    if(value instanceof Heros) {
     	    	return false;
@@ -540,7 +582,6 @@ public class PanneauJeu extends JPanel{
     
     public boolean MonstreTousMorts() {
     	for (Entry<Integer, Soldat> entry : carte.listeSoldats.entrySet()) {
-    	    Integer key = entry.getKey();
     	    Soldat value = entry.getValue();
     	    if(value instanceof Monstre) {
     	    	return false;

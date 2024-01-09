@@ -1,6 +1,10 @@
 package wargame;
 
 public class Heros extends Soldat{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private TypesH typeHerosAlea;
 	
 	/**

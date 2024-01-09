@@ -3,7 +3,11 @@ package wargame;
 import java.io.Serializable;
 
 abstract class Soldat implements ISoldat,Serializable {
-	 private int pointsDeVie;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private int pointsDeVie;
 	    private int portee;
 	    private int tir;
 	    private int puissance;
