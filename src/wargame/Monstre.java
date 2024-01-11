@@ -2,14 +2,18 @@ package wargame;
 
 public class Monstre extends Soldat {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private TypesM typeMonstreAlea;
 	
 	/**
 	 * Constructeur qui initialise aléatoirement un objet Monstre avec une des valeurs de enm TypesM
 	 */
 	public Monstre() {
-        super(TypesM.getTypeMAlea().getPoints(), TypesM.getTypeMAlea().getPortee());
-        this.typeMonstreAlea = TypesM.getTypeMAlea();
+        super(TypesM.getTypeMAlea());
+		this.typeMonstreAlea = super.monstre;
 	}
 	
 	/**
@@ -22,4 +26,14 @@ public class Monstre extends Soldat {
 
 	@Override
 	protected TypesH getTypeHeros() {return null;} // on ignore cette methode dans Monstre
+	
+	@Override
+	public void combat(Soldat soldat) { // le parametre soldat est un monstre dans ce cas
+		soldat.setPoints(soldat.getPoints() - typeMonstreAlea.getPuissance());
+	}
+	
+	@Override
+	public void combatDistance(Soldat soldat) {
+		soldat.setPoints(soldat.getPoints() - typeMonstreAlea.getTir());
+	}
 }

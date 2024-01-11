@@ -1,14 +1,18 @@
 package wargame;
 
 public class Heros extends Soldat{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private TypesH typeHerosAlea;
 	
 	/**
 	 * Constructeur qui initialise aléatoirement un objet Heros avec une des valeurs de enm TypesH
 	 */
 	public Heros() {
-        super(TypesH.getTypeHAlea().getPoints(), TypesH.getTypeHAlea().getPortee());
-        this.typeHerosAlea = TypesH.getTypeHAlea();
+        super(TypesH.getTypeHAlea());
+		this.typeHerosAlea = super.heros;
 	}
 	
 	/**
@@ -22,4 +26,14 @@ public class Heros extends Soldat{
 	@Override
 	protected TypesM getTypeMonstre() {return null;} // on ignore cette methode dans Heros
 	
+
+	@Override
+	public void combat(Soldat soldat) { // le parametre soldat est un monstre dans ce cas
+		soldat.setPoints(soldat.getPoints() - typeHerosAlea.getPuissance());
+	}
+	
+	@Override
+	public void combatDistance(Soldat soldat) {
+		soldat.setPoints(soldat.getPoints() - typeHerosAlea.getTir());
+	}
 }
