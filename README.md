@@ -1,4 +1,4 @@
-# jeu_2048
+# Wargame
 
 Jeu de guerre dans le monde du seigneur des anneaux en Java utilisant JavaSwing pour l'interface graphique
 
